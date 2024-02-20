@@ -1,8 +1,10 @@
-﻿using Key_Card_System_Api.Models.DTO;
-using Key_Card_System_Api.Services.UserService;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Keycard_System_API.Models;
+using Key_Card_System_Api.Services.UserService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Key_Card_System_Api.Models.DTO;
 
 namespace Keycard_System_API.Controllers
 {
@@ -19,47 +21,48 @@ namespace Keycard_System_API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<User>> GetAllUsers()
+        public async Task<ActionResult<List<User>>> GetAllUsers()
         {
-            return _userService.GetAllUsers();
+            var users = await _userService.GetAllUsersAsync();
+            return Ok(users);
         }
 
         [Authorize(Roles = UserRoles.Admin)]
         [HttpGet("{id}")]
-        public ActionResult<User> GetUserById(int id)
+        public async Task<ActionResult<User>> GetUserById(int id)
         {
-            var user = _userService.GetUserById(id);
+            var user = await _userService.GetUserByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
-            return user;
+            return Ok(user);
         }
 
         [HttpPost]
-        public IActionResult CreateUser(User user)
+        public async Task<IActionResult> CreateUser(User user)
         {
-            _userService.CreateUser(user);
+            await _userService.CreateUserAsync(user);
             return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
         }
 
         [HttpPut("{id}")]
-        public ActionResult<User> UpdateUser(int id, User user)
+        public async Task<IActionResult> UpdateUser(int id, User user)
         {
             if (id != user.Id)
             {
                 return BadRequest();
             }
 
-            _userService.UpdateUser(user);
+            await _userService.UpdateUserAsync(user);
 
-            return user;
+            return Ok(user);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            var deleted = _userService.DeleteUser(id);
+            var deleted = await _userService.DeleteUserAsync(id);
 
             if (deleted)
             {
@@ -72,9 +75,9 @@ namespace Keycard_System_API.Controllers
         }
 
         [HttpDelete("deactivate/{id}")]
-        public IActionResult DeactivateUser(int id)
+        public async Task<IActionResult> DeactivateUser(int id)
         {
-            var deactivated = _userService.DeactivateUser(id);
+            var deactivated = await _userService.DeactivateUserAsync(id);
 
             if (deactivated)
             {
@@ -85,6 +88,5 @@ namespace Keycard_System_API.Controllers
                 return NotFound(new { message = "User not found" });
             }
         }
-
     }
 }

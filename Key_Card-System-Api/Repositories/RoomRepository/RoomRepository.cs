@@ -1,24 +1,29 @@
-﻿using Keycard_System_API.Data;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Keycard_System_API.Data;
 using Keycard_System_API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Key_Card_System_Api.Repositories.RoomRepository
 {
-    public class RoomRepository(ApplicationDbContext context) : IRoomRepository
+    public class RoomRepository : IRoomRepository
     {
-        private readonly ApplicationDbContext _context = context;
+        private readonly ApplicationDbContext _context;
 
-        public List<Room> GetAllRooms()
+        public RoomRepository(ApplicationDbContext context)
         {
-            return [.. _context.room];
+            _context = context;
         }
-        public Room? GetRoomById(int id)
+
+        public async Task<List<Room>> GetAllRoomsAsync()
         {
-            var room = _context.room.FirstOrDefault(u => u.Id == id);
-            if (room == null)
-            {
-                return null;
-            }
-            return room;
+            return await _context.room.ToListAsync();
+        }
+
+        public async Task<Room?> GetRoomByIdAsync(int id)
+        {
+            return await _context.room.FirstOrDefaultAsync(r => r.Id == id);
         }
     }
 }

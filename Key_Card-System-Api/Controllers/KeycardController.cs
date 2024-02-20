@@ -1,6 +1,8 @@
 ﻿using Key_Card_System_Api.Models;
 using Key_Card_System_Api.Services.KeycardService;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace Key_Card_System_Api.Controllers
 {
@@ -16,18 +18,25 @@ namespace Key_Card_System_Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllKeycards()
-        {
-            var keycards = _keycardService.GetAllKeycards();
-            return Ok(keycards);
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult GetKeycardById(int id)
+        public async Task<IActionResult> GetAllKeycards()
         {
             try
             {
-                var keycard = _keycardService.GetKeycardById(id);
+                var keycards = await _keycardService.GetAllKeycardsAsync();
+                return Ok(keycards);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetKeycardById(int id)
+        {
+            try
+            {
+                var keycard = await _keycardService.GetKeycardByIdAsync(id);
                 if (keycard == null)
                 {
                     return NotFound();
@@ -41,11 +50,11 @@ namespace Key_Card_System_Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateKeycard([FromBody] Keycard keycard)
+        public async Task<IActionResult> CreateKeycard([FromBody] Keycard keycard)
         {
             try
             {
-                _keycardService.CreateKeycard(keycard);
+                await _keycardService.CreateKeycardAsync(keycard);
                 return CreatedAtAction(nameof(GetKeycardById), new { id = keycard.Id }, keycard);
             }
             catch (ArgumentNullException ex)
@@ -55,7 +64,7 @@ namespace Key_Card_System_Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateKeycard(int id, [FromBody] Keycard keycard)
+        public async Task<IActionResult> UpdateKeycard(int id, [FromBody] Keycard keycard)
         {
             try
             {
@@ -64,7 +73,7 @@ namespace Key_Card_System_Api.Controllers
                     return BadRequest("Mismatched id in route and body");
                 }
 
-                var updatedKeycard = _keycardService.UpdateKeycard(keycard);
+                var updatedKeycard = await _keycardService.UpdateKeycardAsync(keycard);
                 return Ok(updatedKeycard);
             }
             catch (ArgumentNullException ex)
@@ -74,11 +83,11 @@ namespace Key_Card_System_Api.Controllers
         }
 
         [HttpDelete("deactivate/{id}")]
-        public IActionResult DeactivateKeycard(int id)
+        public async Task<IActionResult> DeactivateKeycard(int id)
         {
             try
             {
-                var result = _keycardService.DeactivateKeycard(id);
+                var result = await _keycardService.DeactivateKeycardAsync(id);
                 if (!result)
                 {
                     return NotFound();
@@ -92,11 +101,11 @@ namespace Key_Card_System_Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteKeycard(int id)
+        public async Task<IActionResult> DeleteKeycard(int id)
         {
             try
             {
-                var result = _keycardService.DeleteKeycard(id);
+                var result = await _keycardService.DeleteKeycardAsync(id);
                 if (!result)
                 {
                     return NotFound();

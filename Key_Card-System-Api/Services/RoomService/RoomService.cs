@@ -1,11 +1,12 @@
-﻿using Key_Card_System_Api.Repositories.RoomRepository;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Keycard_System_API.Models;
+using Key_Card_System_Api.Repositories.RoomRepository;
 
 namespace Key_Card_System_Api.Services.RoomService
 {
     public class RoomService : IRoomService
     {
-
         private readonly IRoomRepository _roomRepository;
 
         public RoomService(IRoomRepository roomRepository)
@@ -13,14 +14,14 @@ namespace Key_Card_System_Api.Services.RoomService
             _roomRepository = roomRepository;
         }
 
-        public List<Room> GetAllRooms()
+        public async Task<List<Room>> GetAllRoomsAsync()
         {
-            return _roomRepository.GetAllRooms();
+            return await _roomRepository.GetAllRoomsAsync();
         }
 
-        public Room? GetRoomById(int id)
+        public async Task<Room?> GetRoomByIdAsync(int id)
         {
-            return _roomRepository.GetRoomById(id);
+            return await _roomRepository.GetRoomByIdAsync(id);
         }
     }
 }

@@ -1,7 +1,8 @@
-﻿using Key_Card_System_Api.Repositories.UserRepository;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Key_Card_System_Api.Repositories.UserRepository;
 using Keycard_System_API.Models;
 using Keycard_System_API.Utils;
-
 
 namespace Key_Card_System_Api.Services.UserService
 {
@@ -14,50 +15,48 @@ namespace Key_Card_System_Api.Services.UserService
             _userRepository = userRepository;
         }
 
-        public List<User> GetAllUsers()
+        public async Task<List<User>> GetAllUsersAsync()
         {
-            return _userRepository.GetAllUsers();
+            return await _userRepository.GetAllUsersAsync();
         }
 
-        public User? GetUserById(int id)
+        public async Task<User?> GetUserByIdAsync(int id)
         {
-            return _userRepository.GetUserById(id);
+            return await _userRepository.GetUserByIdAsync(id);
         }
 
-        public void CreateUser(User user)
+        public async Task CreateUserAsync(User user)
         {
-            _userRepository.CreateUser(user);
+            await _userRepository.CreateUserAsync(user);
         }
 
-        public User UpdateUser(User user)
+        public async Task<User> UpdateUserAsync(User user)
         {
-            _userRepository.UpdateUser(user);
-
-            return user;
+            return await _userRepository.UpdateUserAsync(user);
         }
 
-        public bool DeleteUser(int id)
+        public async Task<bool> DeleteUserAsync(int id)
         {
-            return _userRepository.DeleteUser(id);
+            return await _userRepository.DeleteUserAsync(id);
         }
 
-        public bool DeactivateUser(int id)
+        public async Task<bool> DeactivateUserAsync(int id)
         {
-            var user = _userRepository.GetUserById(id);
+            var user = await _userRepository.GetUserByIdAsync(id);
             if (user == null)
             {
                 return false;
             }
 
             user.IsActive = false;
-            _userRepository.UpdateUser(user);
+            await _userRepository.UpdateUserAsync(user);
 
             return true;
         }
 
-        public async Task<User?> AuthenticateByUsername(string username, string password)
+        public async Task<User?> AuthenticateByUsernameAsync(string username, string password)
         {
-            var user = await _userRepository.GetUserByUsername(username);
+            var user = await _userRepository.GetUserByUsernameAsync(username);
 
             if (user != null && PasswordHash.VerifyPassword(password, user.PasswordHash))
             {
@@ -67,9 +66,9 @@ namespace Key_Card_System_Api.Services.UserService
             return null;
         }
 
-        public async Task<User?> AuthenticateByEmail(string email, string password)
+        public async Task<User?> AuthenticateByEmailAsync(string email, string password)
         {
-            var user = await _userRepository.GetUserByEmail(email);
+            var user = await _userRepository.GetUserByEmailAsync(email);
 
             if (user != null && PasswordHash.VerifyPassword(password, user.PasswordHash))
             {
@@ -79,15 +78,15 @@ namespace Key_Card_System_Api.Services.UserService
             return null;
         }
 
-        public async Task<User?> Register(User user, string password)
+        public async Task<User?> RegisterAsync(User user, string password)
         {
-            var existingUser = await _userRepository.GetUserByUsername(user.Username);
+            var existingUser = await _userRepository.GetUserByUsernameAsync(user.Username);
             if (existingUser != null)
                 return null;
 
             user.PasswordHash = PasswordHash.HashPassword(password);
 
-            _userRepository.CreateUser(user);
+            await _userRepository.CreateUserAsync(user);
 
             return user;
         }

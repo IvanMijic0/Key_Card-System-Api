@@ -1,8 +1,9 @@
-﻿using Key_Card_System_Api.Repositories.KeycardRepository;
+﻿using Keycard_System_API.Models;
+using Keycard_System_API.Models.DTO;
+using Key_Card_System_Api.Repositories.KeycardRepository;
 using Key_Card_System_Api.Repositories.LogRepositroy;
 using Key_Card_System_Api.Repositories.RoomRepository;
 using Key_Card_System_Api.Repositories.UserRepository;
-using Keycard_System_API.Models;
 
 namespace Key_Card_System_Api.Services.LogService
 {
@@ -13,8 +14,7 @@ namespace Key_Card_System_Api.Services.LogService
         private readonly IRoomRepository _roomRepository;
         private readonly IUserRepository _userRepository;
 
-        public LogService(ILogRepository logRepository, IKeycardRepository keycardRepository, IRoomRepository roomRepository, IUserRepository userRepository
-            )
+        public LogService(ILogRepository logRepository, IKeycardRepository keycardRepository, IRoomRepository roomRepository, IUserRepository userRepository)
         {
             _logRepository = logRepository;
             _keycardRepository = keycardRepository;
@@ -22,20 +22,20 @@ namespace Key_Card_System_Api.Services.LogService
             _userRepository = userRepository;
         }
 
-        public List<Log> GetAllLogs()
+        public async Task<List<LogDto>> GetAllLogsAsync()
         {
-            return _logRepository.GetAllLogs();
+            var logs = await _logRepository.GetAllLogsAsync();
+            return await EnhanceLogEntriesAsync(logs);
         }
-
-        public Log AddLog(Log log)
+        public async Task<Log> AddLogAsync(Log log)
         {
             ArgumentNullException.ThrowIfNull(log);
 
-            var user = _userRepository.GetUserById(log.User_id) ?? throw new ArgumentException("Invalid user ID.");
+            var user = await _userRepository.GetUserByIdAsync(log.User_id) ?? throw new ArgumentException("Invalid user ID.");
 
-            var keycard = _keycardRepository.GetKeycardById(user.Key_Id) ?? throw new ArgumentException("Invalid key card.");
+            var keycard = await _keycardRepository.GetKeycardByIdAsync(user.Key_Id) ?? throw new ArgumentException("Invalid key card.");
 
-            if (!ValidateAccess(keycard.AccessLevel, log.Room_id))
+            if (!await ValidateAccess(keycard.AccessLevel, log.Room_id))
             {
                 throw new InvalidOperationException("Access level does not match.");
             }
@@ -43,18 +43,50 @@ namespace Key_Card_System_Api.Services.LogService
             log.User_id = keycard.Id;
             log.Room_id = log.Room_id;
 
-            return _logRepository.AddLog(log);
+            return await _logRepository.AddLogAsync(log);
         }
 
-        private bool ValidateAccess(string accessLevel, int roomId)
+        private async Task<List<LogDto>> EnhanceLogEntriesAsync(List<Log> logs)
         {
-            var room = _roomRepository.GetRoomById(roomId) ?? throw new ArgumentException("Invalid room ID.");
-            if (!string.Equals(accessLevel, room.Access_level, StringComparison.OrdinalIgnoreCase))
+            var logDtos = new List<LogDto>();
+
+            var userIds = logs.Select(l => l.User_id).Distinct().ToList();
+            var roomIds = logs.Select(l => l.Room_id).Distinct().ToList();
+
+            var users = await _userRepository.GetAllUsersAsync();
+            var rooms = await _roomRepository.GetAllRoomsAsync();
+
+            foreach (var log in logs)
             {
-                return false; // Access level does not match
+                var user = users.FirstOrDefault(u => u.Id == log.User_id);
+                var room = rooms.FirstOrDefault(r => r.Id == log.Room_id);
+
+                var logDto = new LogDto
+                {
+                    Id = log.Id,
+                    Timestamp = log.Timestamp,
+                    EntryType = log.Entry_type,
+                    Description = log.Description,
+                    UserFirstName = user != null ? user.FirstName : "Unknown",
+                    UserLastName = user != null ? user.LastName : "Unknown",
+                    RoomName = room != null ? room.Name : "Unknown"
+                };
+
+                logDtos.Add(logDto);
             }
 
-            return true; // Access allowed
+            return logDtos;
+        }
+
+        private async Task<bool> ValidateAccess(string accessLevel, int roomId)
+        {
+            var room = await _roomRepository.GetRoomByIdAsync(roomId);
+            if (room == null)
+            {
+                throw new ArgumentException("Invalid room ID.");
+            }
+
+            return string.Equals(accessLevel, room.Access_level, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

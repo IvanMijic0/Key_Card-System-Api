@@ -23,8 +23,8 @@ namespace Keycard_System_API.Controllers
         {
             bool isEmail = model.Username.Contains('@');
 
-            var user = isEmail ? await _userService.AuthenticateByEmail(model.Username, model.Password) :
-                                 await _userService.AuthenticateByUsername(model.Username, model.Password);
+            var user = isEmail ? await _userService.AuthenticateByEmailAsync(model.Username, model.Password) :
+                                 await _userService.AuthenticateByUsernameAsync(model.Username, model.Password);
 
             if (user == null)
                 return Unauthorized();
@@ -58,24 +58,22 @@ namespace Keycard_System_API.Controllers
 
             var newKeycard = new Keycard(model.Key_Id, model.Access_Level);
 
-            _keycardService.CreateKeycard(newKeycard);
+            await _keycardService.CreateKeycardAsync(newKeycard);
 
             var newUser = new User(model.Username, model.First_Name, model.Last_Name, model.Email, newKeycard.Id, model.Password)
             {
                 Role = !string.IsNullOrEmpty(model.Role) ? model.Role : defaultRole
             };
 
-            var registeredUser = await _userService.Register(newUser, model.Password);
+            var registeredUser = await _userService.RegisterAsync(newUser, model.Password);
 
             if (registeredUser == null)
             {
-                _keycardService.DeleteKeycard(newKeycard.Id);
+                await _keycardService.DeleteKeycardAsync(newKeycard.Id);
                 return BadRequest("Failed to register user. Username may already exist.");
             }
 
             return Ok("User registered successfully");
         }
-
-
     }
 }

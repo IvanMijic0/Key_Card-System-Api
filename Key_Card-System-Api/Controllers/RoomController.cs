@@ -3,6 +3,7 @@ using Keycard_System_API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace Keycard_System_API.Controllers
 {
     [Authorize]
@@ -18,15 +19,15 @@ namespace Keycard_System_API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Room>> GetAllRooms()
+        public async Task<ActionResult<List<Room>>> GetAllRooms()
         {
-            return _roomService.GetAllRooms();
+            return await _roomService.GetAllRoomsAsync();
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Room> GetRoomById(int id)
+        public async Task<ActionResult<Room>> GetRoomById(int id)
         {
-            var room = _roomService.GetRoomById(id);
+            var room = await _roomService.GetRoomByIdAsync(id);
             if (room == null)
             {
                 return NotFound();
