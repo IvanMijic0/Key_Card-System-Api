@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 using System;
 using System.Text;
 
@@ -13,6 +14,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var services = builder.Services;
+
+// Configure Redis
+// Adjust connection string as needed
+//services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
+
+/*services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "localhost"; // Adjust connection string as needed
+    options.InstanceName = "KeyCard-Redis-"; // Optional
+});*/
 
 // Configure DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -24,6 +35,17 @@ services.AddScoped<IUserRepository, UserRepository>();
 
 // Register services
 services.AddScoped<IUserService, UserService>();
+
+services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+               builder =>
+               {
+            builder.WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 
 // Configure JWT Authentication
 var jwtKey = "E8TmjOvUoSMkvbvw3nU7nMps1T+8W+mBc9s+7/X9SG0=";
@@ -79,8 +101,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseAuthentication(); // Authentication setup
 app.UseAuthorization(); // Authorization setup goes here
+app.UseCors("AllowSpecificOrigin"); // Cors setup
 
 app.MapControllers();
 
