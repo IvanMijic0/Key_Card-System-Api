@@ -27,6 +27,7 @@ namespace Key_Card_System_Api.Services.LogService
             var logs = await _logRepository.GetAllLogsAsync();
             return await EnhanceLogEntriesAsync(logs);
         }
+
         public async Task<Log> AddLogAsync(Log log)
         {
             ArgumentNullException.ThrowIfNull(log);
@@ -35,15 +36,33 @@ namespace Key_Card_System_Api.Services.LogService
 
             var keycard = await _keycardRepository.GetKeycardByIdAsync(user.Key_Id) ?? throw new ArgumentException("Invalid key card.");
 
-            if (!await ValidateAccess(keycard.AccessLevel, log.Room_id))
+            bool accessValidated = await ValidateAccess(keycard.AccessLevel, log.Room_id);
+
+            string description = $"Attempted access to room {log.Room_id}. Access {(accessValidated ? "granted" : "denied")} for user {user.FirstName} {user.LastName} with key card ID {keycard.Id}";
+
+            log.Description = description;
+
+            try
             {
-                throw new InvalidOperationException("Access level does not match.");
+                if (!accessValidated)
+                {
+                    throw new InvalidOperationException("Access level does not match.");
+                }
+
+                log.User_id = keycard.Id;
+                log.Room_id = log.Room_id;
+
+                var addedLog = await _logRepository.AddLogAsync(log);
+
+                return addedLog;
             }
+            catch (Exception ex)
+            {
+                Log errorLog = new(0, "Error", log.User_id, log.Room_id, $"Error occurred: {ex.Message}");
+                await _logRepository.AddLogAsync(errorLog);
 
-            log.User_id = keycard.Id;
-            log.Room_id = log.Room_id;
-
-            return await _logRepository.AddLogAsync(log);
+                return errorLog;
+            }
         }
 
         private async Task<List<LogDto>> EnhanceLogEntriesAsync(List<Log> logs)
