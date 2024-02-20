@@ -22,5 +22,24 @@ namespace Keycard_System_API.Controllers
         {
             return _logService.GetAllLogs();
         }
+
+        [HttpGet("Count/logs")]
+        public ActionResult<int> CountLogs()
+        {
+            return _logService.CountLogs();
+        }
+
+        [HttpGet("Count/logs{room_id}")]
+        public ActionResult<int> CountLogs(int room_id)
+        {
+            return _logService.CountLogs(room_id);
+        }
+
+        [HttpGet("Count/Errors")]
+        public ActionResult<int> CountErrors()
+        {
+            return _logService.CountErrors();
+        }
+
     }
 }

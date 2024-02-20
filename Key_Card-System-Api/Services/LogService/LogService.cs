@@ -17,5 +17,19 @@ namespace Key_Card_System_Api.Services.LogService
             return _logRepository.GetAllLogs();
         }
 
+        public int CountLogs()
+        {
+           return _logRepository.CountLogs();
+        }
+
+        public int CountLogs(int room_id)
+        {
+            return _logRepository.CountLogs(room_id);
+        }
+
+        public int CountErrors()
+        {
+            return _logRepository.CountErrors();
+        }
     }
 }
