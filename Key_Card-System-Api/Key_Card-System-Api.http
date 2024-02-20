@@ -1,0 +1,6 @@
+@Key_Card_System_Api_HostAddress = http://localhost:5221
+
+GET {{Key_Card_System_Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
