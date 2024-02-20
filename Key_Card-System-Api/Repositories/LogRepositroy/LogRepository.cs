@@ -1,8 +1,7 @@
 ﻿using Keycard_System_API.Data;
 using Keycard_System_API.Models;
-using Microsoft.EntityFrameworkCore;
 
-namespace Keycard_System_API.Repositories
+namespace Key_Card_System_Api.Repositories.LogRepositroy
 {
     public class LogRepository(ApplicationDbContext context) : ILogRepository
     {

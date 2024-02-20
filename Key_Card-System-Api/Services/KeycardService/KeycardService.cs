@@ -34,6 +34,20 @@ namespace Key_Card_System_Api.Services.KeycardService
             return _keycardRepository.UpdateKeycard(keycard);
         }
 
+        public bool DeactivateKeycard(int id)
+        {
+            var keycard = _keycardRepository.GetKeycardById(id);
+            if (keycard == null)
+            {
+                return false;
+            }
+
+            keycard.IsActive = false;
+            _keycardRepository.UpdateKeycard(keycard);
+
+            return true;
+        }
+
         public bool DeleteKeycard(int id)
         {
             return _keycardRepository.DeleteKeycard(id);

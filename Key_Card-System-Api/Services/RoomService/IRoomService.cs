@@ -1,6 +1,6 @@
 ﻿using Keycard_System_API.Models;
 
-namespace Keycard_System_API.Services
+namespace Key_Card_System_Api.Services.RoomService
 {
     public interface IRoomService
     {

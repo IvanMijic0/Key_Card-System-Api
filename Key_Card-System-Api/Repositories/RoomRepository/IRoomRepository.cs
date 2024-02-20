@@ -1,6 +1,6 @@
 ﻿using Keycard_System_API.Models;
 
-namespace Keycard_System_API.Repositories
+namespace Key_Card_System_Api.Repositories.RoomRepository
 {
     public interface IRoomRepository
     {

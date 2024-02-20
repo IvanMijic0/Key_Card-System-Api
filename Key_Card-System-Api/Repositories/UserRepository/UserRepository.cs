@@ -13,7 +13,6 @@ namespace Key_Card_System_Api.Repositories.UserRepository
             return _context.Users.Where(u => u != null).ToList();
         }
 
-
         public User? GetUserById(int id)
         {
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
@@ -49,6 +48,7 @@ namespace Key_Card_System_Api.Repositories.UserRepository
             }
             return false;
         }
+
         public async Task<User?> GetUserByEmail(string email)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
