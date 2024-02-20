@@ -9,8 +9,12 @@ namespace Keycard_System_API.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
-
         public DbSet<User> Users { get; set; }
+
+        public DbSet<Room> room { get; set; }
+
+        public DbSet<Log> logs { get; set; }
+
         public DbSet<Keycard> Keycards { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
