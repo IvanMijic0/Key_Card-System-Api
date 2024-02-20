@@ -12,5 +12,14 @@ namespace Key_Card_System_Api.Repositories.LogRepositroy
         {
             return [.. _context.logs];
         }
+
+        public Log AddLog(Log log)
+        {
+            ArgumentNullException.ThrowIfNull(log);
+
+            _context.logs.Add(log);
+            _context.SaveChanges();
+            return log;
+        }
     }
 }

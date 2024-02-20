@@ -1,7 +1,5 @@
 ﻿using Keycard_System_API.Data;
-using Keycard_System_API.Data;
 using Keycard_System_API.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Key_Card_System_Api.Repositories.RoomRepository
 {
