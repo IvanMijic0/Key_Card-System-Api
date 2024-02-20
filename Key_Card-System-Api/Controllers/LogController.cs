@@ -1,5 +1,5 @@
-﻿using Keycard_System_API.Models;
-using Keycard_System_API.Services;
+﻿using Key_Card_System_Api.Services.LogService;
+using Keycard_System_API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

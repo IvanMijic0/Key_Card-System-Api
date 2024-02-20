@@ -1,10 +1,9 @@
 ﻿using Keycard_System_API.Data;
 using Keycard_System_API.Data;
 using Keycard_System_API.Models;
-using Keycard_System_API.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace Keycard_System_API.Repositories
+namespace Key_Card_System_Api.Repositories.RoomRepository
 {
     public class RoomRepository(ApplicationDbContext context) : IRoomRepository
     {
@@ -16,7 +15,7 @@ namespace Keycard_System_API.Repositories
         }
         public Room? GetRoomById(int id)
         {
-            var room = _context.room.FirstOrDefault(u => u.Id == id); 
+            var room = _context.room.FirstOrDefault(u => u.Id == id);
             if (room == null)
             {
                 return null;

@@ -1,9 +1,9 @@
-﻿using Keycard_System_API.Models;
-using Keycard_System_API.Repositories;
+﻿using Key_Card_System_Api.Repositories.RoomRepository;
+using Keycard_System_API.Models;
 
-namespace Keycard_System_API.Services
+namespace Key_Card_System_Api.Services.RoomService
 {
-    public class RoomService:IRoomService
+    public class RoomService : IRoomService
     {
 
         private readonly IRoomRepository _roomRepository;
