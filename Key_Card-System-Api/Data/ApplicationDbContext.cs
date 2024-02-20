@@ -7,5 +7,7 @@ namespace Keycard_System_API.Data
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Room> room { get; set; }
+
+        public DbSet<Log> logs { get; set; }
     }
 }

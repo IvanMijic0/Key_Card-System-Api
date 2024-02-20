@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Keycard_System_API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RoomController:ControllerBase

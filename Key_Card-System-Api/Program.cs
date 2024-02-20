@@ -35,10 +35,14 @@ services.AddScoped<IUserRepository, UserRepository>();
 
 services.AddScoped<IRoomRepository, RoomRepository>();
 
+services.AddScoped<ILogRepository, LogRepository>();
+
 // Register services
 services.AddScoped<IUserService, UserService>();
 
 services.AddScoped<IRoomService, RoomService>();
+
+services.AddScoped<ILogService, LogService>();
 
 services.AddCors(options =>
 {
