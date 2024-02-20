@@ -56,8 +56,9 @@ namespace Keycard_System_API.Controllers
         {
             string defaultRole = "Employee";
 
-            var newKeycard = new Keycard(model.Key_Id);
-            _keycardService.CreateKeycard(newKeycard);
+            var newKeycard = new Keycard(model.Key_Id, model.Access_Level);
+
+           _keycardService.CreateKeycard(newKeycard);
 
             var newUser = new User(model.Username, model.Email, newKeycard.Id, model.Password)
             {

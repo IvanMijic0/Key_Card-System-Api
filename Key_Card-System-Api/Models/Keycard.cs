@@ -11,6 +11,9 @@ namespace Key_Card_System_Api.Models
         [Column("key_id")]
         public string Key_Id { get; set; }
 
+        [Column("access_level")]
+        public string AccessLevel { get; set; }
+
         [Column("is_active")]
         public bool IsActive { get; set; } = true;
 
@@ -18,9 +21,10 @@ namespace Key_Card_System_Api.Models
         {
         }
 
-        public Keycard(string key_id)
+        public Keycard(string key_id, string accessLevel)
         {
             Key_Id = key_id;
+            AccessLevel = accessLevel;
         }
     }
 }
