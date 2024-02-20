@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Key_Card_System_Api.Repositories.UserRepository;
+﻿using Key_Card_System_Api.Repositories.UserRepository;
 using Keycard_System_API.Models;
 using Keycard_System_API.Utils;
 

@@ -2,9 +2,6 @@
 using Keycard_System_API.Models;
 using Keycard_System_API.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Keycard_System_API.Controllers
 {
@@ -56,7 +53,7 @@ namespace Keycard_System_API.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(500, new { message = "Internal Server Error" });
+                return StatusCode(401, new { message = "Invalid Access" });
             }
         }
     }
