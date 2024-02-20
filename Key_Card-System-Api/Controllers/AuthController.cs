@@ -1,5 +1,8 @@
-﻿using Keycard_System_API.Models;
-using Keycard_System_API.Services;
+﻿using Key_Card_System_Api.Models;
+using Key_Card_System_Api.Models.DTO;
+using Key_Card_System_Api.Services.KeycardService;
+using Key_Card_System_Api.Services.UserService;
+using Keycard_System_API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,14 +13,10 @@ namespace Keycard_System_API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+    public class AuthController(IUserService userService, IKeycardService keycardService) : ControllerBase
     {
-        private readonly IUserService _userService;
-
-        public AuthController(IUserService userService)
-        {
-            _userService = userService;
-        }
+        private readonly IUserService _userService = userService;
+        private readonly IKeycardService _keycardService = keycardService;
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginModel model)
@@ -36,7 +35,7 @@ namespace Keycard_System_API.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                   new(ClaimTypes.Name, user.Id.ToString()),
+                   new(ClaimTypes.NameIdentifier, user.Id.ToString()),
                    new(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddDays(1),
@@ -57,26 +56,25 @@ namespace Keycard_System_API.Controllers
         {
             string defaultRole = "Employee";
 
-            var newUser = new User(model.Username, model.Email, model.Password);
+            var newKeycard = new Keycard(model.Key_Id);
+            _keycardService.CreateKeycard(newKeycard);
 
-            if (!string.IsNullOrEmpty(model.Role))
+            var newUser = new User(model.Username, model.Email, newKeycard.Id, model.Password)
             {
-                newUser.Role = model.Role;
-            }
-            else
-            {
-                newUser.Role = defaultRole;
-            }
+                Role = !string.IsNullOrEmpty(model.Role) ? model.Role : defaultRole
+            };
 
             var registeredUser = await _userService.Register(newUser, model.Password);
 
             if (registeredUser == null)
             {
+                _keycardService.DeleteKeycard(newKeycard.Id);
                 return BadRequest("Failed to register user. Username may already exist.");
             }
 
             return Ok("User registered successfully");
         }
+
 
     }
 }

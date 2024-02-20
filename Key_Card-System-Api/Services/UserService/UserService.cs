@@ -1,12 +1,11 @@
-﻿using Keycard_System_API.Models;
-using Keycard_System_API.Repositories;
+﻿using Key_Card_System_Api.Repositories.UserRepository;
+using Keycard_System_API.Models;
 using Keycard_System_API.Utils;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 
-namespace Keycard_System_API.Services
+
+namespace Key_Card_System_Api.Services.UserService
 {
-    public class UserService: IUserService
+    public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
 
@@ -22,7 +21,7 @@ namespace Keycard_System_API.Services
 
         public User? GetUserById(int id)
         {
-            return _userRepository.GetUserById(id);  
+            return _userRepository.GetUserById(id);
         }
 
         public void CreateUser(User user)
@@ -39,7 +38,7 @@ namespace Keycard_System_API.Services
 
         public bool DeleteUser(int id)
         {
-           return _userRepository.DeleteUser(id);
+            return _userRepository.DeleteUser(id);
         }
 
         public bool DeactivateUser(int id)
@@ -53,7 +52,7 @@ namespace Keycard_System_API.Services
             user.IsActive = false;
             _userRepository.UpdateUser(user);
 
-            return true;                  
+            return true;
         }
 
         public async Task<User?> AuthenticateByUsername(string username, string password)
