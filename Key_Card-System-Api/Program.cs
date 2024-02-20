@@ -3,6 +3,8 @@ using Key_Card_System_Api.Repositories.UserRepository;
 using Key_Card_System_Api.Services.KeycardService;
 using Key_Card_System_Api.Services.UserService;
 using Keycard_System_API.Data;
+using Keycard_System_API.Repositories;
+using Keycard_System_API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
