@@ -73,7 +73,7 @@ namespace Key_Card_System_Api.Controllers
             }
         }
 
-        [HttpPut("deactivate/{id}")]
+        [HttpDelete("deactivate/{id}")]
         public IActionResult DeactivateKeycard(int id)
         {
             try
