@@ -33,8 +33,12 @@ services.AddDbContext<ApplicationDbContext>(options =>
 // Register repositories
 services.AddScoped<IUserRepository, UserRepository>();
 
+services.AddScoped<IRoomRepository, RoomRepository>();
+
 // Register services
 services.AddScoped<IUserService, UserService>();
+
+services.AddScoped<IRoomService, RoomService>();
 
 services.AddCors(options =>
 {
