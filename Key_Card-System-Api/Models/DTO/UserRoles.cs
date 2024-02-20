@@ -1,4 +1,4 @@
-﻿namespace Keycard_System_API.Models
+﻿namespace Key_Card_System_Api.Models.DTO
 {
     public static class UserRoles
     {

@@ -1,8 +1,8 @@
-﻿using Keycard_System_API.Models;
-using Keycard_System_API.Services;
+﻿using Key_Card_System_Api.Models.DTO;
+using Key_Card_System_Api.Services.UserService;
+using Keycard_System_API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 namespace Keycard_System_API.Controllers
 {

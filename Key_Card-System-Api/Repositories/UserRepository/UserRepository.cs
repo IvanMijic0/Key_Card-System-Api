@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Keycard_System_API.Data;
+﻿using Keycard_System_API.Data;
 using Keycard_System_API.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Keycard_System_API.Repositories
+namespace Key_Card_System_Api.Repositories.UserRepository
 {
     public class UserRepository(ApplicationDbContext context) : IUserRepository
     {
@@ -12,8 +10,9 @@ namespace Keycard_System_API.Repositories
 
         public List<User> GetAllUsers()
         {
-            return [.. _context.Users];
+            return _context.Users.Where(u => u != null).ToList();
         }
+
 
         public User? GetUserById(int id)
         {

@@ -1,13 +1,12 @@
+using Key_Card_System_Api.Repositories.KeycardRepository;
+using Key_Card_System_Api.Repositories.UserRepository;
+using Key_Card_System_Api.Services.KeycardService;
+using Key_Card_System_Api.Services.UserService;
 using Keycard_System_API.Data;
-using Keycard_System_API.Repositories;
-using Keycard_System_API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using StackExchange.Redis;
-using System;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,12 +25,17 @@ var services = builder.Services;
 });*/
 
 // Configure DbContext
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySQL(connectionString));
+string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+if (connectionString != null)
+{
+    services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseMySQL(connectionString));
+}
 
 // Register repositories
 services.AddScoped<IUserRepository, UserRepository>();
+services.AddScoped<IKeycardRepository, KeycardRepository>();
 
 services.AddScoped<IRoomRepository, RoomRepository>();
 
@@ -39,6 +43,7 @@ services.AddScoped<ILogRepository, LogRepository>();
 
 // Register services
 services.AddScoped<IUserService, UserService>();
+services.AddScoped<IKeycardService, KeycardService>();
 
 services.AddScoped<IRoomService, RoomService>();
 
@@ -101,6 +106,8 @@ services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000"; // Get port from environment variable or use default 5000
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -116,4 +123,5 @@ app.UseCors("AllowSpecificOrigin"); // Cors setup
 
 app.MapControllers();
 
-app.Run();
+app.Run($"http://0.0.0.0:{port}"); // Listen on all interfaces
+ 
