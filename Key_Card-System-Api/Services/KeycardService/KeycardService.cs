@@ -1,5 +1,8 @@
 ﻿using Key_Card_System_Api.Models;
 using Key_Card_System_Api.Repositories.KeycardRepository;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Key_Card_System_Api.Services.KeycardService
 {
@@ -9,48 +12,47 @@ namespace Key_Card_System_Api.Services.KeycardService
 
         public KeycardService(IKeycardRepository keycardRepository)
         {
-            _keycardRepository = keycardRepository;
+            _keycardRepository = keycardRepository ?? throw new ArgumentNullException(nameof(keycardRepository));
         }
 
-        public List<Keycard> GetAllKeycards()
+        public async Task<List<Keycard>> GetAllKeycardsAsync()
         {
-            return _keycardRepository.GetAllKeycards();
+            return await _keycardRepository.GetAllKeycardsAsync();
         }
 
-        public Keycard? GetKeycardById(int id)
+        public async Task<Keycard?> GetKeycardByIdAsync(int id)
         {
-            return _keycardRepository.GetKeycardById(id);
+            return await _keycardRepository.GetKeycardByIdAsync(id);
         }
 
-        public void CreateKeycard(Keycard keycard)
-        {
-            ArgumentNullException.ThrowIfNull(keycard);
-            _keycardRepository.CreateKeycard(keycard);
-        }
-
-        public Keycard UpdateKeycard(Keycard keycard)
+        public async Task CreateKeycardAsync(Keycard keycard)
         {
             ArgumentNullException.ThrowIfNull(keycard);
-            return _keycardRepository.UpdateKeycard(keycard);
+            await _keycardRepository.CreateKeycardAsync(keycard);
         }
 
-        public bool DeactivateKeycard(int id)
+        public async Task<Keycard> UpdateKeycardAsync(Keycard keycard)
         {
-            var keycard = _keycardRepository.GetKeycardById(id);
+            ArgumentNullException.ThrowIfNull(keycard);
+            return await _keycardRepository.UpdateKeycardAsync(keycard);
+        }
+
+        public async Task<bool> DeactivateKeycardAsync(int id)
+        {
+            var keycard = await _keycardRepository.GetKeycardByIdAsync(id);
             if (keycard == null)
             {
                 return false;
             }
 
             keycard.IsActive = false;
-            _keycardRepository.UpdateKeycard(keycard);
-
+            await _keycardRepository.UpdateKeycardAsync(keycard);
             return true;
         }
 
-        public bool DeleteKeycard(int id)
+        public async Task<bool> DeleteKeycardAsync(int id)
         {
-            return _keycardRepository.DeleteKeycard(id);
+            return await _keycardRepository.DeleteKeycardAsync(id);
         }
     }
 }

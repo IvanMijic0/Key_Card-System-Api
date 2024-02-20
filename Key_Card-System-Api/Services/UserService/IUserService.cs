@@ -4,14 +4,14 @@ namespace Key_Card_System_Api.Services.UserService
 {
     public interface IUserService
     {
-        List<User> GetAllUsers();
-        User? GetUserById(int id);
-        void CreateUser(User user);
-        User UpdateUser(User user);
-        bool DeleteUser(int id);
-        bool DeactivateUser(int id);
-        Task<User?> AuthenticateByUsername(string username, string password);
-        Task<User?> AuthenticateByEmail(string email, string password);
-        Task<User?> Register(User user, string password);
+        Task<List<User>> GetAllUsersAsync();
+        Task<User?> GetUserByIdAsync(int id);
+        Task CreateUserAsync(User user);
+        Task<User> UpdateUserAsync(User user);
+        Task<bool> DeleteUserAsync(int id);
+        Task<bool> DeactivateUserAsync(int id);
+        Task<User?> AuthenticateByUsernameAsync(string username, string password);
+        Task<User?> AuthenticateByEmailAsync(string email, string password);
+        Task<User?> RegisterAsync(User user, string password);
     }
 }

@@ -58,10 +58,10 @@ services.AddCors(options =>
     options.AddDefaultPolicy(
                builder =>
                {
-            builder.WithOrigins("http://localhost:3000")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        });
+                   builder.WithOrigins("http://localhost:3000")
+                       .AllowAnyHeader()
+                       .AllowAnyMethod();
+               });
 });
 
 // Configure JWT Authentication
@@ -128,4 +128,3 @@ app.UseCors("AllowSpecificOrigin"); // Cors setup
 app.MapControllers();
 
 app.Run($"http://0.0.0.0:{port}"); // Listen on all interfaces
- 

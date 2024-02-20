@@ -1,7 +1,10 @@
 ﻿using Key_Card_System_Api.Services.LogService;
 using Keycard_System_API.Models;
-using Microsoft.AspNetCore.Authorization;
+using Keycard_System_API.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Keycard_System_API.Controllers
 {
@@ -18,9 +21,43 @@ namespace Keycard_System_API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Log>> GetAllLogs()
+        public async Task<ActionResult<List<LogDto>>> GetAllLogs()
         {
-            return _logService.GetAllLogs();
+            try
+            {
+                var logs = await _logService.GetAllLogsAsync();
+                return Ok(logs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal Server Error", error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddLog(Log log)
+        {
+            try
+            {
+                var addedLog = await _logService.AddLogAsync(log);
+                return CreatedAtAction(nameof(GetAllLogs), addedLog);
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Internal Server Error" });
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ namespace Key_Card_System_Api.Repositories.LogRepositroy
 {
     public interface ILogRepository
     {
-        List<Log> GetAllLogs();
+        Task<List<Log>> GetAllLogsAsync();
+        Task<Log> AddLogAsync(Log log);
     }
 }
