@@ -18,6 +18,8 @@ namespace Keycard_System_API.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public bool IsActive { get; set; } = true;
+        [Column("in_room")]
+        public bool InRoom { get; set; } = false;
 
         [ForeignKey("key_id")]
         public Keycard Keycard { get; set; }

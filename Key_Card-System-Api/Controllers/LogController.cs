@@ -56,6 +56,19 @@ namespace Keycard_System_API.Controllers
             return CreatedAtAction(nameof(GetAllLogs), addedLog);
         }
 
+        [HttpGet("room")]
+        public async Task<ActionResult<List<LogDto>>> GetLogsInRoom()
+        {
+            var logs = await _logService.GetLogsInRoom();
+
+            if (logs == null || logs.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return logs;
+        }
+
         [HttpGet("search/{searchTerm}")]
         public async Task<ActionResult<List<LogDto>>> SearchLogs(string searchTerm)
         {
