@@ -1,4 +1,6 @@
-﻿namespace Keycard_System_API.Models
+﻿using KeyCard_System_Api.Models;
+
+namespace Keycard_System_API.Models
 {
     public class Log
     {

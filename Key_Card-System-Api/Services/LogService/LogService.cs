@@ -60,7 +60,6 @@ namespace Key_Card_System_Api.Services.LogService
             {
                 Log errorLog = new(0, "Error", log.User_id, log.Room_id, $"Error occurred: {ex.Message}");
                 await _logRepository.AddLogAsync(errorLog);
-
                 return errorLog;
             }
         }
@@ -106,6 +105,21 @@ namespace Key_Card_System_Api.Services.LogService
             }
 
             return string.Equals(accessLevel, room.Access_level, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public async Task<int> CountLogsAsync()
+        {
+            return await _logRepository.CountLogsAsync();
+        }
+
+        public async Task<int> CountLogsAsync(int room_id)
+        {
+            return await _logRepository.CountLogsAsync(room_id);
+        }
+
+        public async Task<int> CountErrorsAsync()
+        {
+            return await _logRepository.CountErrorsAsync();
         }
     }
 }

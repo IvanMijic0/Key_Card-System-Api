@@ -31,6 +31,24 @@ namespace Keycard_System_API.Controllers
             }
         }
 
+        [HttpGet("Count/logs")]
+        public async Task<ActionResult<int>> CountLogsAsync()
+        {
+            return await _logService.CountLogsAsync();
+        }
+
+        [HttpGet("Count/logs{room_id}")]
+        public async Task<ActionResult<int>> CountLogsAsync(int room_id)
+        {
+            return await _logService.CountLogsAsync(room_id);
+        }
+
+        [HttpGet("Count/Errors")]
+        public async Task<ActionResult<int>> CountErrorsAsync()
+        {
+            return await _logService.CountErrorsAsync();
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddLog(Log log)
         {

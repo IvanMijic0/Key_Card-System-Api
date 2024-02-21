@@ -17,6 +17,26 @@ namespace Key_Card_System_Api.Repositories.LogRepositroy
             _context = context;
         }
 
+        public async Task<int> CountLogsAsync()
+        {
+            DateTime sevenDaysAgo = DateTime.Now.AddDays(-8);
+            int logCount = await _context.logs.CountAsync(log => log.Timestamp >= sevenDaysAgo);
+            return logCount;
+        }
+
+        public async Task<int> CountLogsAsync(int room_id)
+        {
+            DateTime sevenDaysAgo = DateTime.Now.AddDays(-8);
+            int logCount = await _context.logs.CountAsync(log => log.Timestamp >= sevenDaysAgo && log.Room_id == room_id);
+            return logCount;
+        }
+
+        public async Task<int> CountErrorsAsync()
+        {
+            int errorCount = await _context.logs.CountAsync(log => log.Entry_type == "Error");
+            return  errorCount;
+        }
+
         public async Task<List<Log>> GetAllLogsAsync()
         {
             return await _context.logs.ToListAsync();
