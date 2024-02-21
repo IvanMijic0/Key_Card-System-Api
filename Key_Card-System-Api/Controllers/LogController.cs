@@ -1,4 +1,5 @@
-﻿using Key_Card_System_Api.Services.LogService;
+﻿using Key_Card_System_Api.Models.DTO;
+using Key_Card_System_Api.Services.LogService;
 using Keycard_System_API.Models;
 using Keycard_System_API.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -50,28 +51,23 @@ namespace Keycard_System_API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddLog(Log log)
+        public async Task<IActionResult> AddLog(LogRequestModel log)
+        {
+            var addedLog = await _logService.AddLogAsync(log);
+                return CreatedAtAction(nameof(GetAllLogs), addedLog);
+          }
+
+        [HttpGet("search/{searchTerm}")]
+        public async Task<ActionResult<List<LogDto>>> SearchLogs(string searchTerm)
         {
             try
             {
-                var addedLog = await _logService.AddLogAsync(log);
-                return CreatedAtAction(nameof(GetAllLogs), addedLog);
+                var logs = await _logService.SearchLogsAsync(searchTerm);
+                return Ok(logs);
             }
-            catch (ArgumentNullException ex)
+            catch (Exception ex)
             {
-                return BadRequest(ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception)
-            {
-                return StatusCode(401, new { message = "Invalid Access" });
+                return StatusCode(500, new { message = "Internal Server Error", error = ex.Message });
             }
         }
     }

@@ -6,11 +6,10 @@ namespace Key_Card_System_Api.Repositories.LogRepositroy
     {
         Task<List<Log>> GetAllLogsAsync();
         Task<Log> AddLogAsync(Log log);
-
+        Task<List<Log>> SearchLogsAsync(string searchTerm);
+      
         Task<int> CountLogsAsync();
-
         Task<int> CountLogsAsync(int room_id);
-
         Task<int> CountErrorsAsync();
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Key_Card_System_Api.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Keycard_System_API.Models
 {
@@ -18,6 +19,9 @@ namespace Keycard_System_API.Models
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public bool IsActive { get; set; } = true;
 
+        [ForeignKey("key_id")]
+        public Keycard Keycard { get; set; }
+       
         public User()
         {
         }
