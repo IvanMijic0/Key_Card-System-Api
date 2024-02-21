@@ -43,12 +43,20 @@ namespace Key_Card_System_Api.Repositories.LogRepositroy
         }
         public async Task<List<Log>> GetLogsByRoomIdAsync(int room_id)
         {
-            return await _context.logs.Where(log => log.Room_id == room_id).ToListAsync();
+            return await _context.logs
+               .Where(log => log.Room_id == room_id)
+               .Include(log => log.User)
+               .Include(log => log.Room)
+               .ToListAsync();
         }
 
         public async Task<List<Log>> GetLogsByUserIdAsync(int user_id)
         {
-            return await _context.logs.Where(log => log.User_id == user_id).ToListAsync();
+            return await _context.logs
+                .Where(log => log.User_id == user_id)
+                .Include(log => log.User)
+                .Include(log => log.Room)
+                .ToListAsync();
         }
 
         public async Task<Log> AddLogAsync(Log log)
