@@ -88,10 +88,14 @@ namespace Key_Card_System_Api.Services.UserService
             return user;
         }
 
-
-        public async Task<List<User>> SearchUsersAsync(string keyId)
+        public async Task<List<User>> SearchUsersByUsernameAsync(string searchTerm)
         {
-            return await _userRepository.SearchUsersAsync(keyId);
+            return await _userRepository.SearchUsersByUsernameAsync(searchTerm);
+        }
+
+        public async Task<List<User>> SearchUsersByKeyIdAsync(string searchTerm)
+        {
+            return await _userRepository.SearchUsersByKeyIdAsync(searchTerm);   
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Keycard_System_API.Models;
-using Keycard_System_API.Models.DTO;
 
 namespace Key_Card_System_Api.Repositories.LogRepositroy
 {
@@ -7,7 +6,9 @@ namespace Key_Card_System_Api.Repositories.LogRepositroy
     {
         Task<List<Log>> GetAllLogsAsync();
         Task<Log> AddLogAsync(Log log);
-        Task<List<Log>> SearchLogsAsync(string searchTerm);
+        Task<List<Log>> SearchLogsByUserIdAsync(string searchTerm);
+        Task<List<Log>> SearchLogsByRoomIdAsync(string searchTerm);
+        Task<List<Log>> SearchLogsByKeycardIdAsync(string searchTerm);
         Task<List<Log>> GetLogsByRoomIdAsync(int room_id);
         Task<List<Log>> GetLogsByUserIdAsync(int user_id);
         Task<int> CountLogsAsync();

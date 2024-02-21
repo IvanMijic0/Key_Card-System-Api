@@ -17,7 +17,7 @@ namespace Key_Card_System_Api.Repositories.UserRepository
         public async Task<List<User>> GetAllUsersAsync()
         {
             return await _context.Users
-                .Include(user => user.Keycard)  
+                .Include(user => user.Keycard)
                 .ToListAsync();
         }
 
@@ -61,13 +61,23 @@ namespace Key_Card_System_Api.Repositories.UserRepository
             return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
 
-        public async Task<List<User>> SearchUsersAsync(string searchTerm)
+        public async Task<List<User>> SearchUsersByUsernameAsync(string searchTerm)
         {
             var lowercaseSearchTerm = searchTerm.ToLower();
             return await _context.Users
-                .Where(u =>
-                    u.Username.Contains(lowercaseSearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
-                    u.Key_Id.ToString().Contains(lowercaseSearchTerm, StringComparison.CurrentCultureIgnoreCase))
+                .Where(u => u.Username.Contains(lowercaseSearchTerm, StringComparison.CurrentCultureIgnoreCase))
+                .ToListAsync();
+        }
+
+        public async Task<List<User>> SearchUsersByKeyIdAsync(string searchTerm)
+        {
+            if (!int.TryParse(searchTerm, out int keyId))
+            {
+                return [];
+            }
+
+            return await _context.Users
+                .Where(u => u.Key_Id == keyId)
                 .ToListAsync();
         }
     }

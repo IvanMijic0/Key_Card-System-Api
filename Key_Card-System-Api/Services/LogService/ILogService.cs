@@ -9,7 +9,9 @@ namespace Key_Card_System_Api.Services.LogService
         Task<List<LogDto>> GetAllLogsAsync();
         Task<List<LogCounts>> GetCountOflogsWithRoomsAsync();
         Task<Log> AddLogAsync(LogRequestModel logRequest);
-        Task<List<Log>> SearchLogsAsync(string searchTerm);
+        Task<List<Log>> SearchLogsByUserAsync(string searchTerm);
+        Task<List<Log>> SearchLogsByRoomAsync(string searchTerm);
+        Task<List<Log>> SearchLogsByKeycardIdAsync(string searchTerm);
         Task<List<LogDto>> GetLogsInRoom();
         Task<List<LogDto>> GetLogsByRoomIdAsync(int room_id);
         Task<List<LogDto>> GetLogsByUserIdAsync(int user_id);
