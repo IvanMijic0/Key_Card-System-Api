@@ -5,6 +5,9 @@ namespace Key_Card_System_Api.Repositories.LogRepositroy
     public interface ILogRepository
     {
         Task<List<Log>> GetAllLogsAsync();
+
+        Task<List<Log>> GetLogsByRoomIdAsync(int room_id);
+
         Task<Log> AddLogAsync(Log log);
 
         Task<int> CountLogsAsync();

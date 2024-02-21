@@ -28,6 +28,11 @@ namespace Key_Card_System_Api.Services.LogService
             return await EnhanceLogEntriesAsync(logs);
         }
 
+        public async Task<List<Log>> GetLogsByRoomIdAsync(int room_id)
+        {
+            return await _logRepository.GetLogsByRoomIdAsync(room_id);
+        }
+
         public async Task<Log> AddLogAsync(Log log)
         {
             ArgumentNullException.ThrowIfNull(log);

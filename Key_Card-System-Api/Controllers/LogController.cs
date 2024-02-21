@@ -31,6 +31,20 @@ namespace Keycard_System_API.Controllers
             }
         }
 
+        [HttpGet("Room{room_id}")]
+        public async Task<ActionResult<List<Log>>> GetLogsByRoomIdAsync(int room_id)
+        {
+            try
+            {
+                var logs = await _logService.GetLogsByRoomIdAsync(room_id);
+                return Ok(logs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal Server Error", error = ex.Message });
+            }
+        }
+
         [HttpGet("Count/logs")]
         public async Task<ActionResult<int>> CountLogsAsync()
         {
