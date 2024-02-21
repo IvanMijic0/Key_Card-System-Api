@@ -26,96 +26,115 @@ namespace Key_Card_System_Api.Services.LogService
             _userRepository = userRepository;
         }
 
-        public async Task<List<LogDto>> GetAllLogsAsync()
+       public async Task<List<LogDto>> GetAllLogsAsync()
+   {
+      var logs = await _logRepository.GetAllLogsAsync();
+      var logDtos = new List<LogDto>();
+
+      foreach (var log in logs)
+      {
+          var user = log.User;
+          var room = log.Room;
+
+          var logDto = new LogDto
+          {
+              Id = log.Id,
+              Timestamp = log.Timestamp,
+              EntryType = log.Entry_type,
+              Description = log.Description!,
+              UserFirstName = user != null ? user.FirstName : "Unknown",
+              UserLastName = user != null ? user.LastName : "Unknown",
+              RoomName = room != null ? room.Name : "Unknown"
+          };
+
+          logDtos.Add(logDto);
+      }
+
+      return logDtos;
+  }
+
+  public async Task<Log> AddLogAsync(LogRequestModel logRequest)
+  {
+      ArgumentNullException.ThrowIfNull(logRequest);
+
+      var user = await _userRepository.GetUserByIdAsync(logRequest.User_Id);
+      if (user == null)
+      {
+          var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, "Invalid user ID.");
+          await _logRepository.AddLogAsync(errorLog);
+          return errorLog;
+      }
+
+      var room = await _roomRepository.GetRoomByIdAsync(logRequest.Room_Id);
+      if (room == null)
+      {
+          var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, "Invalid room ID.");
+          await _logRepository.AddLogAsync(errorLog);
+          return errorLog;
+      }
+
+      var keycard = await _keycardRepository.GetKeycardByIdAsync(user.Key_Id);
+      if (keycard == null)
+      {
+          var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, "User's keycard not found.");
+          await _logRepository.AddLogAsync(errorLog);
+          return errorLog;
+      }
+
+      bool accessGranted = await ValidateAccess(keycard.AccessLevel, room.Access_level);
+      string accessStatus = accessGranted ? "granted" : "denied";
+
+      string description = $"Attempted access to room {room.Name}. Access {accessStatus} for user {user.FirstName} {user.LastName} with key card ID {keycard.Id}";
+
+      var log = new Log(0, logRequest.Entry_Type, logRequest.User_Id, logRequest.Room_Id, description)
+      {
+          User = user,
+          Room = room
+      };
+
+      if (!accessGranted)
+      {
+          description = $"Attempted access to room {room.Name}. Access level does not match for user {user.FirstName} {user.LastName} with key card ID {keycard.Id}";
+          var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, description);
+          await _logRepository.AddLogAsync(errorLog);
+          return errorLog;
+      }
+
+      var addedLog = await _logRepository.AddLogAsync(log);
+
+      return addedLog;
+  }
+
+  public async Task<List<Log>> SearchLogsAsync(string searchTerm)
+  {
+      return await _logRepository.SearchLogsAsync(searchTerm);
+  }
+
+  private static async Task<bool> ValidateAccess(string userAccessLevel, string roomAccessLevel)
+  {
+      return await Task.Run(() =>
+      {
+          var accessLevels = new List<string> { "low", "medium", "high", "manager", "admin" };
+          var userAccessIndex = accessLevels.IndexOf(userAccessLevel.ToLower());
+          var roomAccessIndex = accessLevels.IndexOf(roomAccessLevel.ToLower());
+
+          return userAccessIndex >= roomAccessIndex;
+      });
+  }
+
+        public async Task<int> CountLogsAsync()
         {
-            var logs = await _logRepository.GetAllLogsAsync();
-            var logDtos = new List<LogDto>();
-
-            foreach (var log in logs)
-            {
-                var user = log.User;
-                var room = log.Room;
-
-                var logDto = new LogDto
-                {
-                    Id = log.Id,
-                    Timestamp = log.Timestamp,
-                    EntryType = log.Entry_type,
-                    Description = log.Description!,
-                    UserFirstName = user != null ? user.FirstName : "Unknown",
-                    UserLastName = user != null ? user.LastName : "Unknown",
-                    RoomName = room != null ? room.Name : "Unknown"
-                };
-
-                logDtos.Add(logDto);
-            }
-
-            return logDtos;
+            return await _logRepository.CountLogsAsync();
         }
-        public async Task<Log> AddLogAsync(LogRequestModel logRequest)
+
+        public async Task<int> CountLogsAsync(int room_id)
         {
-            ArgumentNullException.ThrowIfNull(logRequest);
-
-            var user = await _userRepository.GetUserByIdAsync(logRequest.User_Id);
-            if (user == null)
-            {
-                var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, "Invalid user ID.");
-                await _logRepository.AddLogAsync(errorLog);
-                return errorLog;
-            }
-
-            var room = await _roomRepository.GetRoomByIdAsync(logRequest.Room_Id);
-            if (room == null)
-            {
-                var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, "Invalid room ID.");
-                await _logRepository.AddLogAsync(errorLog);
-                return errorLog;
-            }
-
-            var keycard = await _keycardRepository.GetKeycardByIdAsync(user.Key_Id);
-            if (keycard == null)
-            {
-                var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, "User's keycard not found.");
-                await _logRepository.AddLogAsync(errorLog);
-                return errorLog;
-            }
-
-            bool accessGranted = await ValidateAccess(keycard.AccessLevel, room.Access_level);
-            string accessStatus = accessGranted ? "granted" : "denied";
-
-            string description = $"Attempted access to room {room.Name}. Access {accessStatus} for user {user.FirstName} {user.LastName} with key card ID {keycard.Id}";
-
-            var log = new Log(0, logRequest.Entry_Type, logRequest.User_Id, logRequest.Room_Id, description);
-            log.User = user;
-            log.Room = room;
-
-            if (!accessGranted)
-            {
-                var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, "Access level does not match.");
-                await _logRepository.AddLogAsync(errorLog);
-                return errorLog;
-            }
-
-            var addedLog = await _logRepository.AddLogAsync(log);
-
-            return addedLog;
+            return await _logRepository.CountLogsAsync(room_id);
         }
 
-        public async Task<List<Log>> SearchLogsAsync(string searchTerm)
+        public async Task<int> CountErrorsAsync()
         {
-            return await _logRepository.SearchLogsAsync(searchTerm);
-        }
-
-        private static async Task<bool> ValidateAccess(string userAccessLevel, string roomAccessLevel)
-        {
-            return await Task.Run(() =>
-            {
-                var accessLevels = new List<string> { "low", "medium", "high", "manager", "admin" };
-                var userAccessIndex = accessLevels.IndexOf(userAccessLevel.ToLower());
-                var roomAccessIndex = accessLevels.IndexOf(roomAccessLevel.ToLower());
-
-                return userAccessIndex >= roomAccessIndex;
-            });
+            return await _logRepository.CountErrorsAsync();
         }
     }
 }
