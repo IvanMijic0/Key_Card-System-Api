@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Keycard_System_API.Data;
+﻿using Keycard_System_API.Data;
 using Keycard_System_API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,8 +15,12 @@ namespace Key_Card_System_Api.Repositories.LogRepositroy
 
         public async Task<List<Log>> GetAllLogsAsync()
         {
-            return await _context.logs.ToListAsync();
+            return await _context.logs
+                .Include(log => log.User)  
+                .Include(log => log.Room) 
+                .ToListAsync();
         }
+
 
         public async Task<Log> AddLogAsync(Log log)
         {
@@ -29,6 +29,20 @@ namespace Key_Card_System_Api.Repositories.LogRepositroy
             _context.logs.Add(log);
             await _context.SaveChangesAsync();
             return log;
+        }
+
+        public async Task<List<Log>> SearchLogsAsync(string searchTerm)
+        {
+            searchTerm = searchTerm.ToLower();
+
+            return await _context.logs
+                .Include(log => log.User)
+                .Include(log => log.Room)
+                .Where(log =>
+                    log.User.Username.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+                    log.Room.Name.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+                    log.Description!.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase))
+                .ToListAsync();
         }
     }
 }

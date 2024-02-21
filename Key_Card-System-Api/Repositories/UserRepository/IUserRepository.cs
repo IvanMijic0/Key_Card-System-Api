@@ -11,5 +11,6 @@ namespace Key_Card_System_Api.Repositories.UserRepository
         Task<bool> DeleteUserAsync(int id);
         Task<User?> GetUserByEmailAsync(string email);
         Task<User?> GetUserByUsernameAsync(string username);
+        Task<List<User>> SearchUsersAsync(string searchTerm);
     }
 }

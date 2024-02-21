@@ -1,6 +1,7 @@
 ﻿using Keycard_System_API.Data;
 using Keycard_System_API.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 
 namespace Key_Card_System_Api.Repositories.UserRepository
@@ -57,6 +58,16 @@ namespace Key_Card_System_Api.Repositories.UserRepository
         public async Task<User?> GetUserByUsernameAsync(string username)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+        }
+
+        public async Task<List<User>> SearchUsersAsync(string searchTerm)
+        {
+            var lowercaseSearchTerm = searchTerm.ToLower();
+            return await _context.Users
+                .Where(u =>
+                    u.Username.Contains(lowercaseSearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+                    u.Key_Id.ToString().Contains(lowercaseSearchTerm, StringComparison.CurrentCultureIgnoreCase))
+                .ToListAsync();
         }
     }
 }

@@ -86,5 +86,13 @@ namespace Keycard_System_API.Controllers
                 return NotFound(new { message = "User not found" });
             }
         }
+
+        [HttpGet("search/username/{searchTerm}")]
+        public async Task<ActionResult<List<User>>> SearchUsersByUsername(string searchTerm)
+        {
+            var users = await _userService.SearchUsersAsync(searchTerm);
+            return Ok(users);
+        }
+
     }
 }
