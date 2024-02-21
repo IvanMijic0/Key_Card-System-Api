@@ -7,6 +7,9 @@ namespace Key_Card_System_Api.Services.LogService
     public interface ILogService
     {
         Task<List<LogDto>> GetAllLogsAsync();
+
+        Task<List<LogCounts>> GetCountOflogsWithRoomsAsync();
+
         Task<Log> AddLogAsync(LogRequestModel logRequest);
         Task<List<Log>> SearchLogsAsync(string searchTerm);
         Task<List<LogDto>> GetLogsByRoomIdAsync(int room_id);

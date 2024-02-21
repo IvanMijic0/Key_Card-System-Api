@@ -5,6 +5,7 @@ using Key_Card_System_Api.Repositories.RoomRepository;
 using Key_Card_System_Api.Repositories.UserRepository;
 using Keycard_System_API.Models;
 using Keycard_System_API.Models.DTO;
+using System.Collections.Generic;
 
 namespace Key_Card_System_Api.Services.LogService
 {
@@ -22,6 +23,38 @@ namespace Key_Card_System_Api.Services.LogService
             _roomRepository = roomRepository;
             _userRepository = userRepository;
         }
+
+        public async Task<List<LogCounts>> GetCountOflogsWithRoomsAsync()
+        {
+            List<Log> logs = await _logRepository.GetAllLogsAsync();
+            var logCounts = new List<LogCounts>();
+
+            var countByRoomId = logs
+                .GroupBy(log => log.Room_id)
+                .Select(group => new { RoomId = group.Key, Count = group.Count() })
+                .ToDictionary(item => item.RoomId, item => item.Count);
+
+            foreach (var kvp in countByRoomId)
+            {
+                int roomId = kvp.Key;
+                int numberOfLogs = kvp.Value;
+
+                var logWithRoom = logs.FirstOrDefault(log => log.Room_id == roomId);
+                
+                string roomName = logWithRoom.Room.Name; 
+
+                LogCounts logCount = new LogCounts
+                {
+                    Id = roomId,
+                    RoomName = roomName,
+                    NumberOfLogs = numberOfLogs
+                };
+
+                logCounts.Add(logCount);
+            }
+            return logCounts;
+        }
+
         public async Task<List<LogDto>> GetLogsByRoomIdAsync(int room_id)
         {
             var logs = await _logRepository.GetLogsByRoomIdAsync(room_id);
