@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-﻿using KeyCard_System_Api.Models;
 
 namespace Keycard_System_API.Models
 {

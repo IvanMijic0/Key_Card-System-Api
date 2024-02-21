@@ -1,7 +1,6 @@
 ﻿using Key_Card_System_Api.Repositories.UserRepository;
 using Keycard_System_API.Models;
 using Keycard_System_API.Utils;
-using System.Text.RegularExpressions;
 
 namespace Key_Card_System_Api.Services.UserService
 {
@@ -89,7 +88,7 @@ namespace Key_Card_System_Api.Services.UserService
             return user;
         }
 
- 
+
         public async Task<List<User>> SearchUsersAsync(string keyId)
         {
             return await _userRepository.SearchUsersAsync(keyId);

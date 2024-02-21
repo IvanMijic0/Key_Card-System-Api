@@ -1,8 +1,6 @@
 ﻿using Key_Card_System_Api.Models;
 using Key_Card_System_Api.Services.KeycardService;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading.Tasks;
 
 namespace Key_Card_System_Api.Controllers
 {

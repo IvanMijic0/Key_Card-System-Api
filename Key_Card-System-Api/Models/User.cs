@@ -21,7 +21,7 @@ namespace Keycard_System_API.Models
 
         [ForeignKey("key_id")]
         public Keycard Keycard { get; set; }
-       
+
         public User()
         {
         }

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Keycard_System_API.Models;
-using Keycard_System_API.Models.DTO;
+﻿using Key_Card_System_Api.Models.DTO;
 using Key_Card_System_Api.Repositories.KeycardRepository;
 using Key_Card_System_Api.Repositories.LogRepositroy;
 using Key_Card_System_Api.Repositories.RoomRepository;
 using Key_Card_System_Api.Repositories.UserRepository;
-using Key_Card_System_Api.Models.DTO;
+using Keycard_System_API.Models;
+using Keycard_System_API.Models.DTO;
 
 namespace Key_Card_System_Api.Services.LogService
 {
@@ -26,101 +23,102 @@ namespace Key_Card_System_Api.Services.LogService
             _userRepository = userRepository;
         }
 
-       public async Task<List<LogDto>> GetAllLogsAsync()
-   {
-      var logs = await _logRepository.GetAllLogsAsync();
-      var logDtos = new List<LogDto>();
+        public async Task<List<LogDto>> GetAllLogsAsync()
+        {
+            var logs = await _logRepository.GetAllLogsAsync();
+            var logDtos = new List<LogDto>();
 
-      foreach (var log in logs)
-      {
-          var user = log.User;
-          var room = log.Room;
+            foreach (var log in logs.OrderByDescending(l => l.Id)) 
+            {
+                var user = log.User;
+                var room = log.Room;
 
-          var logDto = new LogDto
-          {
-              Id = log.Id,
-              Timestamp = log.Timestamp,
-              EntryType = log.Entry_type,
-              Description = log.Description!,
-              UserFirstName = user != null ? user.FirstName : "Unknown",
-              UserLastName = user != null ? user.LastName : "Unknown",
-              RoomName = room != null ? room.Name : "Unknown"
-          };
+                var logDto = new LogDto
+                {
+                    Id = log.Id,
+                    Timestamp = log.Timestamp,
+                    EntryType = log.Entry_type,
+                    Description = log.Description!,
+                    UserFirstName = user != null ? user.FirstName : "Unknown",
+                    UserLastName = user != null ? user.LastName : "Unknown",
+                    RoomName = room != null ? room.Name : "Unknown"
+                };
 
-          logDtos.Add(logDto);
-      }
+                logDtos.Add(logDto);
+            }
 
-      return logDtos;
-  }
+            return logDtos;
+        }
 
-  public async Task<Log> AddLogAsync(LogRequestModel logRequest)
-  {
-      ArgumentNullException.ThrowIfNull(logRequest);
 
-      var user = await _userRepository.GetUserByIdAsync(logRequest.User_Id);
-      if (user == null)
-      {
-          var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, "Invalid user ID.");
-          await _logRepository.AddLogAsync(errorLog);
-          return errorLog;
-      }
+        public async Task<Log> AddLogAsync(LogRequestModel logRequest)
+        {
+            ArgumentNullException.ThrowIfNull(logRequest);
 
-      var room = await _roomRepository.GetRoomByIdAsync(logRequest.Room_Id);
-      if (room == null)
-      {
-          var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, "Invalid room ID.");
-          await _logRepository.AddLogAsync(errorLog);
-          return errorLog;
-      }
+            var user = await _userRepository.GetUserByIdAsync(logRequest.User_Id);
+            if (user == null)
+            {
+                var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, "Invalid user ID.");
+                await _logRepository.AddLogAsync(errorLog);
+                return errorLog;
+            }
 
-      var keycard = await _keycardRepository.GetKeycardByIdAsync(user.Key_Id);
-      if (keycard == null)
-      {
-          var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, "User's keycard not found.");
-          await _logRepository.AddLogAsync(errorLog);
-          return errorLog;
-      }
+            var room = await _roomRepository.GetRoomByIdAsync(logRequest.Room_Id);
+            if (room == null)
+            {
+                var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, "Invalid room ID.");
+                await _logRepository.AddLogAsync(errorLog);
+                return errorLog;
+            }
 
-      bool accessGranted = await ValidateAccess(keycard.AccessLevel, room.Access_level);
-      string accessStatus = accessGranted ? "granted" : "denied";
+            var keycard = await _keycardRepository.GetKeycardByIdAsync(user.Key_Id);
+            if (keycard == null)
+            {
+                var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, "User's keycard not found.");
+                await _logRepository.AddLogAsync(errorLog);
+                return errorLog;
+            }
 
-      string description = $"Attempted access to room {room.Name}. Access {accessStatus} for user {user.FirstName} {user.LastName} with key card ID {keycard.Id}";
+            bool accessGranted = await ValidateAccess(keycard.AccessLevel, room.Access_level);
+            string accessStatus = accessGranted ? "granted" : "denied";
 
-      var log = new Log(0, logRequest.Entry_Type, logRequest.User_Id, logRequest.Room_Id, description)
-      {
-          User = user,
-          Room = room
-      };
+            string description = $"Attempted access to room {room.Name}. Access {accessStatus} for user {user.FirstName} {user.LastName} with key card ID {keycard.Id}";
 
-      if (!accessGranted)
-      {
-          description = $"Attempted access to room {room.Name}. Access level does not match for user {user.FirstName} {user.LastName} with key card ID {keycard.Id}";
-          var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, description);
-          await _logRepository.AddLogAsync(errorLog);
-          return errorLog;
-      }
+            var log = new Log(0, logRequest.Entry_Type, logRequest.User_Id, logRequest.Room_Id, description)
+            {
+                User = user,
+                Room = room
+            };
 
-      var addedLog = await _logRepository.AddLogAsync(log);
+            if (!accessGranted)
+            {
+                description = $"Attempted access to room {room.Name}. Access level does not match for user {user.FirstName} {user.LastName} with key card ID {keycard.Id}";
+                var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, description);
+                await _logRepository.AddLogAsync(errorLog);
+                return errorLog;
+            }
 
-      return addedLog;
-  }
+            var addedLog = await _logRepository.AddLogAsync(log);
 
-  public async Task<List<Log>> SearchLogsAsync(string searchTerm)
-  {
-      return await _logRepository.SearchLogsAsync(searchTerm);
-  }
+            return addedLog;
+        }
 
-  private static async Task<bool> ValidateAccess(string userAccessLevel, string roomAccessLevel)
-  {
-      return await Task.Run(() =>
-      {
-          var accessLevels = new List<string> { "low", "medium", "high", "manager", "admin" };
-          var userAccessIndex = accessLevels.IndexOf(userAccessLevel.ToLower());
-          var roomAccessIndex = accessLevels.IndexOf(roomAccessLevel.ToLower());
+        public async Task<List<Log>> SearchLogsAsync(string searchTerm)
+        {
+            return await _logRepository.SearchLogsAsync(searchTerm);
+        }
 
-          return userAccessIndex >= roomAccessIndex;
-      });
-  }
+        private static async Task<bool> ValidateAccess(string userAccessLevel, string roomAccessLevel)
+        {
+            return await Task.Run(() =>
+            {
+                var accessLevels = new List<string> { "low", "medium", "high", "manager", "admin" };
+                var userAccessIndex = accessLevels.IndexOf(userAccessLevel.ToLower());
+                var roomAccessIndex = accessLevels.IndexOf(roomAccessLevel.ToLower());
+
+                return userAccessIndex >= roomAccessIndex;
+            });
+        }
 
         public async Task<int> CountLogsAsync()
         {

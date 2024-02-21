@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using Key_Card_System_Api.Repositories.RoomRepository;
 using Keycard_System_API.Models;
-using Key_Card_System_Api.Repositories.RoomRepository;
 
 namespace Key_Card_System_Api.Services.RoomService
 {

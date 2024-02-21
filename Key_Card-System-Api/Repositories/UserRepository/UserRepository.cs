@@ -1,7 +1,6 @@
 ﻿using Keycard_System_API.Data;
 using Keycard_System_API.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
 
 
 namespace Key_Card_System_Api.Repositories.UserRepository

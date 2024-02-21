@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Keycard_System_API.Data;
+﻿using Keycard_System_API.Data;
 using Keycard_System_API.Models;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,8 +1,5 @@
 ﻿using Key_Card_System_Api.Models;
 using Key_Card_System_Api.Repositories.KeycardRepository;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Key_Card_System_Api.Services.KeycardService
 {

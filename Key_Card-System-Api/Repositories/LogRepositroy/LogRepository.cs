@@ -30,14 +30,14 @@ namespace Key_Card_System_Api.Repositories.LogRepositroy
         public async Task<int> CountErrorsAsync()
         {
             int errorCount = await _context.logs.CountAsync(log => log.Entry_type == "Error");
-            return  errorCount;
+            return errorCount;
         }
 
         public async Task<List<Log>> GetAllLogsAsync()
         {
             return await _context.logs
-                .Include(log => log.User)  
-                .Include(log => log.Room) 
+                .Include(log => log.User)
+                .Include(log => log.Room)
                 .ToListAsync();
         }
 
