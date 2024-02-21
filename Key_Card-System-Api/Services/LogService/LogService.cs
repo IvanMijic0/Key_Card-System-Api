@@ -22,6 +22,59 @@ namespace Key_Card_System_Api.Services.LogService
             _roomRepository = roomRepository;
             _userRepository = userRepository;
         }
+        public async Task<List<LogDto>> GetLogsByRoomIdAsync(int room_id)
+        {
+            var logs = await _logRepository.GetLogsByRoomIdAsync(room_id);
+            var logDtos = new List<LogDto>();
+
+            foreach (var log in logs.OrderByDescending(l => l.Id))
+            {
+                var user = log.User;
+                var room = log.Room;
+
+                var logDto = new LogDto
+                {
+                    Id = log.Id,
+                    Timestamp = log.Timestamp,
+                    EntryType = log.Entry_type,
+                    Description = log.Description!,
+                    UserFirstName = user != null ? user.FirstName : "Unknown",
+                    UserLastName = user != null ? user.LastName : "Unknown",
+                    RoomName = room != null ? room.Name : "Unknown"
+                };
+
+                logDtos.Add(logDto);
+            }
+
+            return logDtos;
+        }
+
+        public async Task<List<LogDto>> GetLogsByUserIdAsync(int user_id)
+        {
+            var logs = await _logRepository.GetLogsByUserIdAsync(user_id);
+            var logDtos = new List<LogDto>();
+
+            foreach (var log in logs.OrderByDescending(l => l.Id))
+            {
+                var user = log.User;
+                var room = log.Room;
+
+                var logDto = new LogDto
+                {
+                    Id = log.Id,
+                    Timestamp = log.Timestamp,
+                    EntryType = log.Entry_type,
+                    Description = log.Description!,
+                    UserFirstName = user != null ? user.FirstName : "Unknown",
+                    UserLastName = user != null ? user.LastName : "Unknown",
+                    RoomName = room != null ? room.Name : "Unknown"
+                };
+
+                logDtos.Add(logDto);
+            }
+
+            return logDtos;
+        }
 
         public async Task<List<LogDto>> GetAllLogsAsync()
         {

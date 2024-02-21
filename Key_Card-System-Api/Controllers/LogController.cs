@@ -1,5 +1,6 @@
 ﻿using Key_Card_System_Api.Models.DTO;
 using Key_Card_System_Api.Services.LogService;
+using Keycard_System_API.Models;
 using Keycard_System_API.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +24,34 @@ namespace Keycard_System_API.Controllers
             try
             {
                 var logs = await _logService.GetAllLogsAsync();
+                return Ok(logs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal Server Error", error = ex.Message });
+            }
+        }
+
+        [HttpGet("Room{id}")]
+        public async Task<ActionResult<List<LogDto>>> GetLogsByRoomIdAsync(int id)
+        {
+            try
+            {
+                var logs = await _logService.GetLogsByRoomIdAsync(id);
+                return Ok(logs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal Server Error", error = ex.Message });
+            }
+        }
+
+        [HttpGet("User{id}")]
+        public async Task<ActionResult<List<LogDto>>> GetLogsByUserIdAsync(int id)
+        {
+            try
+            {
+                var logs = await _logService.GetLogsByUserIdAsync(id);
                 return Ok(logs);
             }
             catch (Exception ex)
