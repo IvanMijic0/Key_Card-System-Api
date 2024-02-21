@@ -31,7 +31,7 @@ namespace Keycard_System_API.Controllers
             }
         }
 
-        [HttpGet("Room{room_id}")]
+        [HttpGet("{room_id}")]
         public async Task<ActionResult<List<Log>>> GetLogsByRoomIdAsync(int room_id)
         {
             try
