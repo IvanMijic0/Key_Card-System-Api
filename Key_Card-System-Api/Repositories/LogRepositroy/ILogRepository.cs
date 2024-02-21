@@ -8,6 +8,8 @@ namespace Key_Card_System_Api.Repositories.LogRepositroy
 
         Task<List<Log>> GetLogsByRoomIdAsync(int room_id);
 
+        Task<List<Log>> GetLogsByUserIdAsync(int user_id);
+
         Task<Log> AddLogAsync(Log log);
 
         Task<int> CountLogsAsync();

@@ -33,6 +33,11 @@ namespace Key_Card_System_Api.Services.LogService
             return await _logRepository.GetLogsByRoomIdAsync(room_id);
         }
 
+        public async Task<List<Log>> GetLogsByUserIdAsync(int user_id)
+        {
+            return await _logRepository.GetLogsByUserIdAsync(user_id);
+        }
+
         public async Task<Log> AddLogAsync(Log log)
         {
             ArgumentNullException.ThrowIfNull(log);

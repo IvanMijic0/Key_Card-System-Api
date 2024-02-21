@@ -10,6 +10,8 @@ namespace Key_Card_System_Api.Services.LogService
 
         Task<List<Log>> GetLogsByRoomIdAsync(int room_id);
 
+        Task<List<Log>> GetLogsByUserIdAsync(int user_id);
+
         Task<int> CountLogsAsync();
 
         Task<int> CountLogsAsync(int room_id);

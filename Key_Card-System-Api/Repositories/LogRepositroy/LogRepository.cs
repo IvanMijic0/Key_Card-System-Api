@@ -47,6 +47,11 @@ namespace Key_Card_System_Api.Repositories.LogRepositroy
             return await _context.logs.Where(log => log.Room_id == room_id).ToListAsync();
         }
 
+        public async Task<List<Log>> GetLogsByUserIdAsync(int user_id)
+        {
+            return await _context.logs.Where(log => log.User_id == user_id).ToListAsync();
+        }
+
         public async Task<Log> AddLogAsync(Log log)
         {
             ArgumentNullException.ThrowIfNull(log);
