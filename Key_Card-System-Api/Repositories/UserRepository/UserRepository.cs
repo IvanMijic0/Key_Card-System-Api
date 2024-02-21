@@ -16,7 +16,9 @@ namespace Key_Card_System_Api.Repositories.UserRepository
 
         public async Task<List<User>> GetAllUsersAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users
+                .Include(user => user.Keycard)  
+                .ToListAsync();
         }
 
         public async Task<User?> GetUserByIdAsync(int id)
