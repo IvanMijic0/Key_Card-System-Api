@@ -1,5 +1,6 @@
 ﻿using Keycard_System_API.Data;
 using Keycard_System_API.Models;
+using Keycard_System_API.Models.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace Key_Card_System_Api.Repositories.LogRepositroy
@@ -40,6 +41,14 @@ namespace Key_Card_System_Api.Repositories.LogRepositroy
                 .Include(log => log.Room)
                 .ToListAsync();
         }
+        public async Task<List<Log>> GetLogsByRoomIdAsync(int room_id)
+        {
+            return await _context.logs
+               .Where(log => log.Room_id == room_id)
+               .Include(log => log.User)
+               .Include(log => log.Room)
+               .ToListAsync();
+        }
 
         public async Task<List<Log?>> GetLatestLogsWhereUserInRoomAsync()
         {
@@ -54,6 +63,14 @@ namespace Key_Card_System_Api.Repositories.LogRepositroy
             return latestLogs;
         }
 
+        public async Task<List<Log>> GetLogsByUserIdAsync(int user_id)
+        {
+            return await _context.logs
+                .Where(log => log.User_id == user_id)
+                .Include(log => log.User)
+                .Include(log => log.Room)
+                .ToListAsync();
+        }
 
         public async Task<Log> AddLogAsync(Log log)
         {
