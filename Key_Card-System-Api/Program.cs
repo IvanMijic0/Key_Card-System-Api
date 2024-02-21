@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,17 +19,43 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var services = builder.Services;
 
-// Configure Redis
-// Adjust connection string as needed
-//services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
-
-/*services.AddStackExchangeRedisCache(options =>
+services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = "localhost"; // Adjust connection string as needed
-    options.InstanceName = "KeyCard-Redis-"; // Optional
-});*/
+    var redisUrl = "rediss://red-cnan6cn109ks739nnh20:vqgZKHdaJ1r6RVQLuZPcuuF8lFaFeqCO@frankfurt-redis.render.com:6379";
+    var uri = new Uri(redisUrl);
 
-// Configure DbContext
+    var configuration = new ConfigurationOptions
+    {
+        EndPoints = { $"{uri.Host}:{uri.Port}" },
+        Password = uri.UserInfo.Split(':')[1],
+        Ssl = uri.Scheme == "rediss"
+    };
+
+    try
+    {
+        var connection = ConnectionMultiplexer.Connect(configuration);
+        if (connection.IsConnected)
+        {
+            Console.WriteLine("Connection to Redis server is successful!");
+        }
+        else
+        {
+            Console.WriteLine("Failed to connect to Redis server.");
+        }
+
+        connection.Dispose();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error connecting to Redis server: {ex.Message}");
+    }
+
+    options.Configuration = configuration.ToString();
+});
+
+
+
+
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 if (connectionString != null)

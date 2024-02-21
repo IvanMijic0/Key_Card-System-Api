@@ -50,6 +50,19 @@ namespace Key_Card_System_Api.Repositories.LogRepositroy
                .ToListAsync();
         }
 
+        public async Task<List<Log?>> GetLatestLogsWhereUserInRoomAsync()
+        {
+            var latestLogs = await _context.logs
+                .Include(log => log.User)
+                .Include(log => log.Room)
+                .Where(log => log.User != null && log.User.InRoom)
+                .GroupBy(log => log.User.Id) 
+                .Select(group => group.OrderByDescending(log => log.Timestamp).FirstOrDefault())
+                .ToListAsync();
+
+            return latestLogs;
+        }
+
         public async Task<List<Log>> GetLogsByUserIdAsync(int user_id)
         {
             return await _context.logs

@@ -11,6 +11,7 @@ namespace Key_Card_System_Api.Repositories.LogRepositroy
         Task<List<Log>> GetLogsByRoomIdAsync(int room_id);
         Task<List<Log>> GetLogsByUserIdAsync(int user_id);
         Task<int> CountLogsAsync();
+        Task<List<Log?>> GetLatestLogsWhereUserInRoomAsync();
         Task<int> CountLogsAsync(int room_id);
         Task<int> CountErrorsAsync();
     }

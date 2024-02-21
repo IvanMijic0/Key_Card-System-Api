@@ -114,7 +114,7 @@ namespace Key_Card_System_Api.Services.LogService
             var logs = await _logRepository.GetAllLogsAsync();
             var logDtos = new List<LogDto>();
 
-            foreach (var log in logs.OrderByDescending(l => l.Id)) 
+            foreach (var log in logs.OrderByDescending(l => l.Id))
             {
                 var user = log.User;
                 var room = log.Room;
@@ -136,6 +136,32 @@ namespace Key_Card_System_Api.Services.LogService
             return logDtos;
         }
 
+        public async Task<List<LogDto>> GetLogsInRoom()
+        {
+            var logs = await _logRepository.GetLatestLogsWhereUserInRoomAsync();
+            var logDtos = new List<LogDto>();
+
+            foreach (var log in logs.OrderByDescending(l => l?.Id))
+            {
+                var user = log.User;
+                var room = log.Room;
+
+                var logDto = new LogDto
+                {
+                    Id = log.Id,
+                    Timestamp = log.Timestamp,
+                    EntryType = log.Entry_type,
+                    Description = log.Description!,
+                    UserFirstName = user != null ? user.FirstName : "Unknown",
+                    UserLastName = user != null ? user.LastName : "Unknown",
+                    RoomName = room != null ? room.Name : "Unknown"
+                };
+
+                logDtos.Add(logDto);
+            }
+
+            return logDtos;
+        }
 
         public async Task<Log> AddLogAsync(LogRequestModel logRequest)
         {
@@ -170,6 +196,15 @@ namespace Key_Card_System_Api.Services.LogService
 
             string description = $"Attempted access to room {room.Name}. Access {accessStatus} for user {user.FirstName} {user.LastName} with key card ID {keycard.Id}";
 
+            if (logRequest.Entry_Type == "In")
+            {
+                user.InRoom = true;
+            }
+            else if (logRequest.Entry_Type == "Out")
+            {
+                user.InRoom = false;
+            }
+
             var log = new Log(0, logRequest.Entry_Type, logRequest.User_Id, logRequest.Room_Id, description)
             {
                 User = user,
@@ -188,6 +223,7 @@ namespace Key_Card_System_Api.Services.LogService
 
             return addedLog;
         }
+
 
         public async Task<List<Log>> SearchLogsAsync(string searchTerm)
         {
