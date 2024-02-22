@@ -4,6 +4,7 @@ using Key_Card_System_Api.Repositories.LogRepositroy;
 using Key_Card_System_Api.Repositories.NotificationRepository;
 using Key_Card_System_Api.Repositories.RoomRepository;
 using Key_Card_System_Api.Repositories.UserRepository;
+using Key_Card_System_Api.Services.EmailService;
 using Key_Card_System_Api.Services.KeycardService;
 using Key_Card_System_Api.Services.LogService;
 using Key_Card_System_Api.Services.NotificationService;
@@ -11,7 +12,6 @@ using Key_Card_System_Api.Services.RoomService;
 using Key_Card_System_Api.Services.UserService;
 using Keycard_System_API.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -27,6 +27,18 @@ var services = builder.Services;
 services.AddSignalR();
 
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Register EmailService
+services.AddTransient<EmailService>(provider =>
+{
+    // Configure SMTP server details
+    string smtpServer = builder.Configuration["SmtpSettings:Server"] ?? string.Empty;
+    int smtpPort = Convert.ToInt32(builder.Configuration["SmtpSettings:Port"]);
+    string smtpUsername = builder.Configuration["SmtpSettings:Username"] ?? string.Empty;
+    string smtpPassword = builder.Configuration["SmtpSettings:Password"] ?? string.Empty;
+
+    return new EmailService(smtpServer, smtpPort, smtpUsername, smtpPassword);
+});
 
 services.AddSingleton<IConnectionMultiplexer>(sp =>
 {
@@ -78,7 +90,8 @@ services.AddCors(options =>
 });
 
 // Configure JWT Authentication
-var jwtKey = "E8TmjOvUoSMkvbvw3nU7nMps1T+8W+mBc9s+7/X9SG0=";
+string jwtKey = builder.Configuration["JwtSettings:Key"] ?? "DefaultJwtKey";
+
 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

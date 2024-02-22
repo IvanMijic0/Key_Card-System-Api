@@ -1,5 +1,4 @@
-﻿using Key_Card_System_Api.Models.DTO;
-using Key_Card_System_Api.Services.UserService;
+﻿using Key_Card_System_Api.Services.UserService;
 using Keycard_System_API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,11 +48,11 @@ namespace Keycard_System_API.Controllers
             try
             {
                 await _userService.UpdateUsersKeyCardAcessLevelAsync(user_id, response, access_level);
-                return Ok(); 
+                return Ok();
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message); 
+                return BadRequest(ex.Message);
             }
         }
 

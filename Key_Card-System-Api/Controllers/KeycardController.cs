@@ -61,6 +61,24 @@ namespace Key_Card_System_Api.Controllers
             }
         }
 
+        [HttpPost("replace/{userId}")]
+        public async Task<IActionResult> ReplaceKeycard(int userId)
+        {
+            try
+            {
+                var user = await _keycardService.ReplaceKeycardAsync(userId);
+                return Ok(user);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while processing your request: {ex.Message}");
+            }
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateKeycard(int id, [FromBody] Keycard keycard)
         {
