@@ -25,7 +25,6 @@ namespace Keycard_System_API.Controllers
             return Ok(users);
         }
 
-        [Authorize(Roles = UserRoles.Admin)]
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUserById(int id)
         {
@@ -101,12 +100,32 @@ namespace Keycard_System_API.Controllers
             }
         }
 
-        [HttpGet("search/username/{searchTerm}")]
+        [HttpGet("search/by-username/{searchTerm}")]
         public async Task<ActionResult<List<User>>> SearchUsersByUsername(string searchTerm)
         {
-            var users = await _userService.SearchUsersAsync(searchTerm);
-            return Ok(users);
+            try
+            {
+                var users = await _userService.SearchUsersByUsernameAsync(searchTerm);
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal Server Error", error = ex.Message });
+            }
         }
 
+        [HttpGet("search/by-keycard/{searchTerm}")]
+        public async Task<ActionResult<List<User>>> SearchUsersByKeyId(string searchTerm)
+        {
+            try
+            {
+                var users = await _userService.SearchUsersByKeyIdAsync(searchTerm);
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal Server Error", error = ex.Message });
+            }
+        }
     }
 }

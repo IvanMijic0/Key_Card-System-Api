@@ -1,6 +1,5 @@
 ﻿using Key_Card_System_Api.Models.DTO;
 using Key_Card_System_Api.Services.LogService;
-using Keycard_System_API.Models;
 using Keycard_System_API.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 
@@ -99,12 +98,25 @@ namespace Keycard_System_API.Controllers
             return CreatedAtAction(nameof(GetAllLogs), addedLog);
         }
 
-        [HttpGet("search/{searchTerm}")]
-        public async Task<ActionResult<List<LogDto>>> SearchLogs(string searchTerm)
+        [HttpGet("room")]
+        public async Task<ActionResult<List<LogDto>>> GetLogsInRoom()
+        {
+            var logs = await _logService.GetLogsInRoom();
+
+            if (logs == null || logs.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return logs;
+        }
+
+        [HttpGet("search/by-username/{searchTerm}")]
+        public async Task<ActionResult<List<LogDto>>> SearchLogsByUser(string searchTerm)
         {
             try
             {
-                var logs = await _logService.SearchLogsAsync(searchTerm);
+                var logs = await _logService.SearchLogsByUserAsync(searchTerm);
                 return Ok(logs);
             }
             catch (Exception ex)
@@ -112,5 +124,34 @@ namespace Keycard_System_API.Controllers
                 return StatusCode(500, new { message = "Internal Server Error", error = ex.Message });
             }
         }
+
+        [HttpGet("search/by-room/{searchTerm}")]
+        public async Task<ActionResult<List<LogDto>>> SearchLogsByRoom(string searchTerm)
+        {
+            try
+            {
+                var logs = await _logService.SearchLogsByRoomAsync(searchTerm);
+                return Ok(logs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal Server Error", error = ex.Message });
+            }
+        }
+
+        [HttpGet("search/by-keycard/{searchTerm}")]
+        public async Task<ActionResult<List<LogDto>>> SearchLogsByKeycard(string searchTerm)
+        {
+            try
+            {
+                var logs = await _logService.SearchLogsByKeycardIdAsync(searchTerm);
+                return Ok(logs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal Server Error", error = ex.Message });
+            }
+        }
+
     }
 }
