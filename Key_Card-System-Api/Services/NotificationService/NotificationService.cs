@@ -1,12 +1,9 @@
-﻿using Key_Card_System_Api.Models;
-using Key_Card_System_Api.Models.DTO;
+﻿using Key_Card_System_Api.Models.DTO;
 using Key_Card_System_Api.Repositories.NotificationRepository;
-using Key_Card_System_Api.Repositories.RoomRepository;
-using Keycard_System_API.Models;
 
 namespace Key_Card_System_Api.Services.NotificationService
 {
-    public class NotificationService:INotificationService
+    public class NotificationService : INotificationService
     {
         private readonly INotificationRepository _notificationRepository;
 
