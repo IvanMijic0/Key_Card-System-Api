@@ -1,3 +1,4 @@
+using Key_Card_System_Api.configuration;
 using Key_Card_System_Api.Repositories.KeycardRepository;
 using Key_Card_System_Api.Repositories.LogRepositroy;
 using Key_Card_System_Api.Repositories.RoomRepository;
@@ -8,6 +9,7 @@ using Key_Card_System_Api.Services.RoomService;
 using Key_Card_System_Api.Services.UserService;
 using Keycard_System_API.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -19,6 +21,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var services = builder.Services;
 
+// Add SignalR service
+services.AddSignalR();
 
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -127,5 +131,8 @@ app.UseAuthorization(); // Authorization setup goes here
 app.UseCors("AllowSpecificOrigin"); // Cors setup
 
 app.MapControllers();
+
+// Map the SignalR endpoint
+app.MapHub<MyHub>("/myhub");
 
 app.Run($"http://0.0.0.0:{port}"); // Listen on all interfaces

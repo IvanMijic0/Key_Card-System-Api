@@ -190,6 +190,13 @@ namespace Key_Card_System_Api.Services.LogService
                 return errorLog;
             }
 
+            if (!keycard.IsActive)
+            {
+                var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, "User's keycard is inactive.");
+                await _logRepository.AddLogAsync(errorLog);
+                return errorLog;
+            }
+
             bool accessGranted = await ValidateAccess(keycard.AccessLevel, room.Access_level);
             string accessStatus = accessGranted ? "granted" : "denied";
 
