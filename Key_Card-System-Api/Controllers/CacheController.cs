@@ -1,28 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
-using System.Text;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
 
 namespace Key_Card_System_Api.Controllers
 {
     [ApiController]
+    [EnableCors("AllowSpecificOrigin")]
     [Route("[controller]")]
     public class CacheController : ControllerBase
     {
-        private readonly IDistributedCache _cache;
+        private readonly IConnectionMultiplexer _connectionMultiplexer;
 
-        public CacheController(IDistributedCache cache)
+        public CacheController(IConnectionMultiplexer connectionMultiplexer)
         {
-            _cache = cache;
+            _connectionMultiplexer = connectionMultiplexer ?? throw new ArgumentNullException(nameof(connectionMultiplexer));
         }
 
         [HttpGet("{key}")]
-        public async Task<IActionResult> GetCacheValue(string key)
+        public async Task<IActionResult> GetValue(string key)
         {
-            var cachedValue = await _cache.GetAsync(key);
-            if (cachedValue != null)
+            var db = _connectionMultiplexer.GetDatabase();
+
+            var cachedValue = await db.StringGetAsync(key);
+            if (!cachedValue.IsNull)
             {
-                var cachedString = Encoding.UTF8.GetString(cachedValue);
-                return Ok($"Cached value for key '{key}': {cachedString}");
+                return Ok(cachedValue);
             }
             else
             {
@@ -31,14 +33,13 @@ namespace Key_Card_System_Api.Controllers
         }
 
         [HttpPost("{key}")]
-        public async Task<IActionResult> SetCacheValue(string key, [FromBody] string value)
+        public async Task<IActionResult> SetValue(string key, [FromBody] string value)
         {
-            var encodedValue = Encoding.UTF8.GetBytes(value);
-            var options = new DistributedCacheEntryOptions()
-                .SetSlidingExpiration(TimeSpan.FromDays(5));
-            await _cache.SetAsync(key, encodedValue, options);
+            var db = _connectionMultiplexer.GetDatabase();
+
+            await db.StringSetAsync(key, value);
+
             return Ok($"Value for key '{key}' set in cache");
         }
-
     }
 }
