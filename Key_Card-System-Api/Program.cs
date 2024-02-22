@@ -90,7 +90,8 @@ services.AddCors(options =>
 });
 
 // Configure JWT Authentication
-var jwtKey = "E8TmjOvUoSMkvbvw3nU7nMps1T+8W+mBc9s+7/X9SG0=";
+string jwtKey = builder.Configuration["JwtSettings:Key"] ?? "DefaultJwtKey";
+
 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

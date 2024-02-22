@@ -30,11 +30,13 @@ namespace Keycard_System_API.Controllers
                 return Unauthorized();
 
             var tokenHandler = new JwtSecurityTokenHandler();
+            // Should make the secret an environment variable when you get the time
             var key = Encoding.ASCII.GetBytes("E8TmjOvUoSMkvbvw3nU7nMps1T+8W+mBc9s+7/X9SG0=");
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
+
                    new(ClaimTypes.Name, user.FirstName),
                    new(ClaimTypes.NameIdentifier, user.Id.ToString()),
                    new(ClaimTypes.Role, user.Role)
