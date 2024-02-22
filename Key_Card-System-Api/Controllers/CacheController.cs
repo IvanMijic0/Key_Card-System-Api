@@ -32,7 +32,6 @@ namespace Key_Card_System_Api.Controllers
             }
         }
 
-
         [HttpPost("{key}")]
         public async Task<IActionResult> SetValue(string key, [FromBody] string value)
         {

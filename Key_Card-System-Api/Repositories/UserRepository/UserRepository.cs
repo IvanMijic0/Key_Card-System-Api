@@ -14,7 +14,6 @@ namespace Key_Card_System_Api.Repositories.UserRepository
             _context = context;
         }
 
-
         public async Task<List<User>> GetAllUsersAsync()
         {
             return await _context.Users
