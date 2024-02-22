@@ -5,6 +5,7 @@ using Key_Card_System_Api.Repositories.RoomRepository;
 using Key_Card_System_Api.Repositories.UserRepository;
 using Keycard_System_API.Models;
 using Keycard_System_API.Models.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace Key_Card_System_Api.Services.LogService
 {
@@ -25,7 +26,11 @@ namespace Key_Card_System_Api.Services.LogService
 
         public async Task<List<LogCounts>> GetCountOflogsWithRoomsAsync()
         {
-            List<Log> logs = await _logRepository.GetAllLogsAsync();
+            DateTime sevenDaysAgo = DateTime.Now.AddDays(-8);
+
+            List<Log> logsforfilter = await _logRepository.GetAllLogsAsync();
+            List<Log> logs = logsforfilter.Where(log => log.Timestamp >= sevenDaysAgo).ToList();
+
             var logCounts = new List<LogCounts>();
 
             var countByRoomId = logs
