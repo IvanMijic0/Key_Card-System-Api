@@ -230,19 +230,88 @@ namespace Key_Card_System_Api.Services.LogService
             return addedLog;
         }
 
-        public async Task<List<Log>> SearchLogsByUserAsync(string searchTerm)
+        public async Task<List<LogDto>> SearchLogsByUserAsync(string searchTerm)
         {
-            return await _logRepository.SearchLogsByUserIdAsync(searchTerm);
+            var logs = await _logRepository.SearchLogsByUserIdAsync(searchTerm);
+
+            var logDtos = new List<LogDto>();
+
+            foreach (var log in logs.OrderByDescending(l => l?.Id))
+            {
+                var user = log.User;
+                var room = log.Room;
+
+                var logDto = new LogDto
+                {
+                    Id = log.Id,
+                    Timestamp = log.Timestamp,
+                    EntryType = log.Entry_type,
+                    Description = log.Description!,
+                    UserFirstName = user != null ? user.FirstName : "Unknown",
+                    UserLastName = user != null ? user.LastName : "Unknown",
+                    RoomName = room != null ? room.Name : "Unknown"
+                };
+
+                logDtos.Add(logDto);
+            }
+
+            return logDtos;
         }
 
-        public async Task<List<Log>> SearchLogsByRoomAsync(string searchTerm)
+        public async Task<List<LogDto>> SearchLogsByRoomAsync(string searchTerm)
         {
-            return await _logRepository.SearchLogsByRoomIdAsync(searchTerm);
+            var logs = await _logRepository.SearchLogsByRoomIdAsync(searchTerm);
+
+            var logDtos = new List<LogDto>();
+
+            foreach (var log in logs.OrderByDescending(l => l?.Id))
+            {
+                var user = log.User;
+                var room = log.Room;
+
+                var logDto = new LogDto
+                {
+                    Id = log.Id,
+                    Timestamp = log.Timestamp,
+                    EntryType = log.Entry_type,
+                    Description = log.Description!,
+                    UserFirstName = user != null ? user.FirstName : "Unknown",
+                    UserLastName = user != null ? user.LastName : "Unknown",
+                    RoomName = room != null ? room.Name : "Unknown"
+                };
+
+                logDtos.Add(logDto);
+            }
+
+            return logDtos;
         }
 
-        public async Task<List<Log>> SearchLogsByKeycardIdAsync(string searchTerm)
+        public async Task<List<LogDto>> SearchLogsByKeycardIdAsync(string searchTerm)
         {
-            return await _logRepository.SearchLogsByKeycardIdAsync(searchTerm);
+            var logs = await _logRepository.SearchLogsByKeycardIdAsync(searchTerm);
+
+            var logDtos = new List<LogDto>();
+
+            foreach (var log in logs.OrderByDescending(l => l?.Id))
+            {
+                var user = log.User;
+                var room = log.Room;
+
+                var logDto = new LogDto
+                {
+                    Id = log.Id,
+                    Timestamp = log.Timestamp,
+                    EntryType = log.Entry_type,
+                    Description = log.Description!,
+                    UserFirstName = user != null ? user.FirstName : "Unknown",
+                    UserLastName = user != null ? user.LastName : "Unknown",
+                    RoomName = room != null ? room.Name : "Unknown"
+                };
+
+                logDtos.Add(logDto);
+            }
+
+            return logDtos;
         }
 
         public async Task<int> CountLogsAsync()
