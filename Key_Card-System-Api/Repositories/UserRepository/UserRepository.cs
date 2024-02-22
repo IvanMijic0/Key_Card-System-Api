@@ -49,7 +49,7 @@ namespace Key_Card_System_Api.Repositories.UserRepository
 
                 if (keyCard != null)
                 {
-                    if(response == "approve")
+                    if (response == "approve")
                     {
                         keyCard.AccessLevel = access_level;
                         _context.Keycards.Update(keyCard);
