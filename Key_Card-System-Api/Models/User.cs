@@ -21,7 +21,7 @@ namespace Keycard_System_API.Models
         [Column("in_room")]
         public bool InRoom { get; set; } = false;
 
-        [ForeignKey("key_id")]
+        [ForeignKey("Key_Id")]
         public Keycard Keycard { get; set; }
 
         public User()

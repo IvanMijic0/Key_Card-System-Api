@@ -13,6 +13,7 @@ namespace Key_Card_System_Api.Services.UserService
         Task<User?> AuthenticateByUsernameAsync(string username, string password);
         Task<User?> AuthenticateByEmailAsync(string email, string password);
         Task<User?> RegisterAsync(User user, string password);
-        Task<List<User>> SearchUsersAsync(string keyId);
+        Task<List<User>> SearchUsersByUsernameAsync(string searchTerm);
+        Task<List<User>> SearchUsersByKeyIdAsync(string searchTerm);
     }
 }

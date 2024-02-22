@@ -35,6 +35,7 @@ namespace Keycard_System_API.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
+                   new(ClaimTypes.Name, user.FirstName),
                    new(ClaimTypes.NameIdentifier, user.Id.ToString()),
                    new(ClaimTypes.Role, user.Role)
                 }),

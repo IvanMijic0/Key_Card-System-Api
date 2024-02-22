@@ -5,7 +5,6 @@ using Key_Card_System_Api.Repositories.RoomRepository;
 using Key_Card_System_Api.Repositories.UserRepository;
 using Keycard_System_API.Models;
 using Keycard_System_API.Models.DTO;
-using System.Collections.Generic;
 
 namespace Key_Card_System_Api.Services.LogService
 {
@@ -40,10 +39,10 @@ namespace Key_Card_System_Api.Services.LogService
                 int numberOfLogs = kvp.Value;
 
                 var logWithRoom = logs.FirstOrDefault(log => log.Room_id == roomId);
-                
-                string roomName = logWithRoom.Room.Name; 
 
-                LogCounts logCount = new LogCounts
+                string roomName = logWithRoom!.Room.Name;
+
+                LogCounts logCount = new()
                 {
                     Id = roomId,
                     RoomName = roomName,
@@ -224,23 +223,21 @@ namespace Key_Card_System_Api.Services.LogService
             return addedLog;
         }
 
-
-        public async Task<List<Log>> SearchLogsAsync(string searchTerm)
+        public async Task<List<Log>> SearchLogsByUserAsync(string searchTerm)
         {
-            return await _logRepository.SearchLogsAsync(searchTerm);
+            return await _logRepository.SearchLogsByUserIdAsync(searchTerm);
         }
 
-        private static async Task<bool> ValidateAccess(string userAccessLevel, string roomAccessLevel)
+        public async Task<List<Log>> SearchLogsByRoomAsync(string searchTerm)
         {
-            return await Task.Run(() =>
-            {
-                var accessLevels = new List<string> { "low", "medium", "high", "manager", "admin" };
-                var userAccessIndex = accessLevels.IndexOf(userAccessLevel.ToLower());
-                var roomAccessIndex = accessLevels.IndexOf(roomAccessLevel.ToLower());
-
-                return userAccessIndex >= roomAccessIndex;
-            });
+            return await _logRepository.SearchLogsByRoomIdAsync(searchTerm);
         }
+
+        public async Task<List<Log>> SearchLogsByKeycardIdAsync(string searchTerm)
+        {
+            return await _logRepository.SearchLogsByKeycardIdAsync(searchTerm);
+        }
+
 
         public async Task<int> CountLogsAsync()
         {
@@ -255,6 +252,17 @@ namespace Key_Card_System_Api.Services.LogService
         public async Task<int> CountErrorsAsync()
         {
             return await _logRepository.CountErrorsAsync();
+        }
+        private static async Task<bool> ValidateAccess(string userAccessLevel, string roomAccessLevel)
+        {
+            return await Task.Run(() =>
+            {
+                var accessLevels = new List<string> { "low", "medium", "high", "manager", "admin" };
+                var userAccessIndex = accessLevels.IndexOf(userAccessLevel.ToLower());
+                var roomAccessIndex = accessLevels.IndexOf(roomAccessLevel.ToLower());
+
+                return userAccessIndex >= roomAccessIndex;
+            });
         }
     }
 }
