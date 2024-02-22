@@ -16,5 +16,6 @@ namespace Key_Card_System_Api.Services.UserService
         Task UpdateUsersKeyCardAcessLevelAsync(int user_id, string response, string access_level);
         Task<List<User>> SearchUsersByUsernameAsync(string searchTerm);
         Task<List<User>> SearchUsersByKeyIdAsync(string searchTerm);
+        Task UpdateUsersKeyCardAcessLevelAsync(int user_id, string access_level);
     }
 }

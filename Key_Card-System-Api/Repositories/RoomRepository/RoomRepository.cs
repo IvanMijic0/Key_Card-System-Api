@@ -22,5 +22,12 @@ namespace Key_Card_System_Api.Repositories.RoomRepository
         {
             return await _context.room.FirstOrDefaultAsync(r => r.Id == id);
         }
+
+        public async Task UpdateRoomAccessLevelAsync(int roomId, string accessLevel)
+        {
+            var room = await _context.room.FindAsync(roomId) ?? throw new ArgumentException("Room not found.");
+            room.Access_level = accessLevel;
+            await _context.SaveChangesAsync();
+        }
     }
 }

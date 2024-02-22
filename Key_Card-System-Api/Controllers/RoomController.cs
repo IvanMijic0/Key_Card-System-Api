@@ -34,5 +34,23 @@ namespace Keycard_System_API.Controllers
             }
             return room;
         }
+
+        [HttpPost("{roomId}/accesslevel")]
+        public async Task<IActionResult> UpdateRoomAccessLevel(int roomId, string accessLevel)
+        {
+            try
+            {
+                await _roomService.UpdateRoomAccessLevelAsync(roomId, accessLevel);
+                return Ok("Room access level updated successfully.");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while processing your request: {ex.Message}");
+            }
+        }
     }
 }

@@ -111,5 +111,18 @@ namespace Key_Card_System_Api.Repositories.UserRepository
                 .Where(u => u.Key_Id == keyId)
                 .ToListAsync();
         }
+
+        public async Task UpdateUsersKeyCardAcessLevelAsync(int userId, string accessLevel)
+        {
+            var user = await _context.Users
+                .Include(u => u.Keycard) 
+                .FirstOrDefaultAsync(u => u.Id == userId) ?? throw new Exception("User not found.");
+            var keycard = user.Keycard ?? throw new Exception("Keycard not found for this user.");
+            keycard.AccessLevel = accessLevel;
+            keycard.PreviousAccessLevel = accessLevel;
+
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

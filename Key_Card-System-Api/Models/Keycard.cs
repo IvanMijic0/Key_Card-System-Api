@@ -9,10 +9,12 @@ namespace Key_Card_System_Api.Models
         public int Id { get; set; }
 
         [Column("key_id")]
-        public string Key_Id { get; set; }
+        public string? Key_Id { get; set; }
 
         [Column("access_level")]
         public string AccessLevel { get; set; }
+        [Column("previous_access_level")]
+        public string PreviousAccessLevel { get; set; }
 
         [Column("is_active")]
         public bool IsActive { get; set; } = true;

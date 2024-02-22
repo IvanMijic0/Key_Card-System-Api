@@ -127,5 +127,23 @@ namespace Keycard_System_API.Controllers
                 return StatusCode(500, new { message = "Internal Server Error", error = ex.Message });
             }
         }
+
+        [HttpPost("{userId}/keycard/accesslevel")]
+        public async Task<IActionResult> UpdateUserKeycardAccessLevel(int userId, string accessLevel)
+        {
+            try
+            {
+                await _userService.UpdateUsersKeyCardAcessLevelAsync(userId, accessLevel);
+                return Ok("Keycard access level updated successfully.");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while processing your request: {ex.Message}");
+            }
+        }
     }
 }

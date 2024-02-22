@@ -14,5 +14,6 @@ namespace Key_Card_System_Api.Repositories.UserRepository
         Task<User?> GetUserByUsernameAsync(string username);
         Task<List<User>> SearchUsersByUsernameAsync(string searchTerm);
         Task<List<User>> SearchUsersByKeyIdAsync(string searchTerm);
+        Task UpdateUsersKeyCardAcessLevelAsync(int user_id, string access_level);
     }
 }

@@ -88,6 +88,8 @@ namespace Key_Card_System_Api.Services.UserService
 
             user.PasswordHash = PasswordHash.HashPassword(password);
 
+            user.Keycard.PreviousAccessLevel = user.Keycard.AccessLevel;
+
             await _userRepository.CreateUserAsync(user);
 
             return user;
@@ -101,6 +103,11 @@ namespace Key_Card_System_Api.Services.UserService
         public async Task<List<User>> SearchUsersByKeyIdAsync(string searchTerm)
         {
             return await _userRepository.SearchUsersByKeyIdAsync(searchTerm);   
+        }
+
+        public async Task UpdateUsersKeyCardAcessLevelAsync(int user_id, string access_level)
+        {
+            await _userRepository.UpdateUsersKeyCardAcessLevelAsync(user_id, access_level);
         }
     }
 }
