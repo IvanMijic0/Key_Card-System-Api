@@ -1,10 +1,12 @@
 using Key_Card_System_Api.configuration;
 using Key_Card_System_Api.Repositories.KeycardRepository;
 using Key_Card_System_Api.Repositories.LogRepositroy;
+using Key_Card_System_Api.Repositories.NotificationRepository;
 using Key_Card_System_Api.Repositories.RoomRepository;
 using Key_Card_System_Api.Repositories.UserRepository;
 using Key_Card_System_Api.Services.KeycardService;
 using Key_Card_System_Api.Services.LogService;
+using Key_Card_System_Api.Services.NotificationService;
 using Key_Card_System_Api.Services.RoomService;
 using Key_Card_System_Api.Services.UserService;
 using Keycard_System_API.Data;
@@ -44,19 +46,25 @@ if (connectionString != null)
 
 // Register repositories
 services.AddScoped<IUserRepository, UserRepository>();
+
 services.AddScoped<IKeycardRepository, KeycardRepository>();
 
 services.AddScoped<IRoomRepository, RoomRepository>();
 
 services.AddScoped<ILogRepository, LogRepository>();
 
+services.AddScoped<INotificationRepository, NotificationRepository>();
+
 // Register services
 services.AddScoped<IUserService, UserService>();
+
 services.AddScoped<IKeycardService, KeycardService>();
 
 services.AddScoped<IRoomService, RoomService>();
 
 services.AddScoped<ILogService, LogService>();
+
+services.AddScoped<INotificationService, NotificationService>();
 
 services.AddCors(options =>
 {

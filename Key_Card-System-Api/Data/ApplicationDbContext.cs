@@ -17,6 +17,8 @@ namespace Keycard_System_API.Data
 
         public DbSet<Keycard> Keycards { get; set; }
 
+        public DbSet<Notification>  notifications{ get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().ToTable("users");

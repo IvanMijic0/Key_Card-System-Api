@@ -14,6 +14,7 @@ namespace Key_Card_System_Api.Repositories.UserRepository
             _context = context;
         }
 
+
         public async Task<List<User>> GetAllUsersAsync()
         {
             return await _context.Users
@@ -37,6 +38,35 @@ namespace Key_Card_System_Api.Repositories.UserRepository
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
             return user;
+        }
+
+        public async Task UpdateUsersKeyCardAcessLevelAsync(int user_id, string response, string access_level)
+        {
+            var user = await _context.Users.FindAsync(user_id);
+
+            if (user != null)
+            {
+                var keyCard = await _context.Keycards.FirstOrDefaultAsync(k => k.Id == user.Key_Id);
+
+                if (keyCard != null)
+                {
+                    if(response == "approve")
+                    {
+                        keyCard.AccessLevel = access_level;
+                        _context.Keycards.Update(keyCard);
+                    }
+
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    throw new Exception("Nije pronađen odgovarajući key_card za korisnika.");
+                }
+            }
+            else
+            {
+                throw new Exception("Korisnik nije pronađen.");
+            }
         }
 
         public async Task<bool> DeleteUserAsync(int id)
