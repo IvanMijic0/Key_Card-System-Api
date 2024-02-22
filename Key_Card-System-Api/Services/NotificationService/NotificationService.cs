@@ -24,6 +24,7 @@ namespace Key_Card_System_Api.Services.NotificationService
                     var notificationRequest = new NotificationRequest
                     {
                         Id = notification.User.Id,
+                        UserEmail = notification.User.Email,
                         UserFirstName = notification.User.FirstName,
                         UserSecondName = notification.User.LastName,
                         Access_level = notification.Access_level
