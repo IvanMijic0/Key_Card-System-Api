@@ -204,11 +204,33 @@ namespace Key_Card_System_Api.Services.LogService
 
             if (logRequest.Entry_Type == "In")
             {
+                if (user.InRoom)
+                {
+                    // User is already in a room, cannot enter another room without leaving first
+                    var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, $"User '{user.FirstName} {user.LastName}' is already in a room. Cannot enter another room without leaving first.");
+                    await _logRepository.AddLogAsync(errorLog);
+                    return errorLog;
+                }
+
                 user.InRoom = true;
+                user.CurrentRoomId = logRequest.Room_Id;
+
+                description = $"Access granted to enter room {room.Name} for user {user.FirstName} {user.LastName} with key card ID {keycard.Id}";
+
             }
             else if (logRequest.Entry_Type == "Out")
             {
+                if (!user.InRoom || user.InRoom && user.CurrentRoomId != logRequest.Room_Id)
+                {
+                    // User is not in the specified room, cannot leave it
+                    var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, $"User '{user.FirstName} {user.LastName}' is not in room {room.Name}. Cannot leave a room that the user is not in.");
+                    await _logRepository.AddLogAsync(errorLog);
+                    return errorLog;
+                }
+
                 user.InRoom = false;
+                user.CurrentRoomId = 0;
+                description = $"Access granted to leave room {room.Name} for user {user.FirstName} {user.LastName} with key card ID {keycard.Id}";
             }
 
             var log = new Log(0, logRequest.Entry_Type, logRequest.User_Id, logRequest.Room_Id, description)
@@ -220,6 +242,8 @@ namespace Key_Card_System_Api.Services.LogService
             if (!accessGranted)
             {
                 description = $"Attempted access to room {room.Name}. Access level does not match for user {user.FirstName} {user.LastName} with key card ID {keycard.Id}";
+                user.InRoom = false;
+                user.CurrentRoomId = 0;
                 var errorLog = new Log(0, "Error", logRequest.User_Id, logRequest.Room_Id, description);
                 await _logRepository.AddLogAsync(errorLog);
                 return errorLog;
