@@ -95,6 +95,7 @@ namespace Key_Card_System_Api.Repositories.UserRepository
         {
             var lowercaseSearchTerm = searchTerm.ToLower();
             return await _context.Users
+                .Include(u => u.Keycard)
                 .Where(u => u.Username.Contains(lowercaseSearchTerm, StringComparison.CurrentCultureIgnoreCase))
                 .ToListAsync();
         }
@@ -107,6 +108,7 @@ namespace Key_Card_System_Api.Repositories.UserRepository
             }
 
             return await _context.Users
+                .Include(u => u.Keycard)
                 .Where(u => u.Key_Id == keyId)
                 .ToListAsync();
         }

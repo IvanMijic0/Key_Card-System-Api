@@ -60,7 +60,7 @@ namespace Keycard_System_API.Controllers
         }
 
         [HttpGet("User{id}")]
-        public async Task<ActionResult<List<LogDto>>> GetLogsByUserIdAsync(int id)
+        public async Task<ActionResult<List<LogDto>>> GetLogsLogByUserIdAsync(int id)
         {
             try
             {

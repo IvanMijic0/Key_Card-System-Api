@@ -24,13 +24,14 @@ namespace Key_Card_System_Api.Controllers
             var cachedValue = await db.StringGetAsync(key);
             if (!cachedValue.IsNull)
             {
-                return Ok(cachedValue);
+                return Ok(cachedValue.ToString());
             }
             else
             {
                 return NotFound($"No cached value found for key '{key}'");
             }
         }
+
 
         [HttpPost("{key}")]
         public async Task<IActionResult> SetValue(string key, [FromBody] string value)

@@ -20,6 +20,8 @@ namespace Keycard_System_API.Models
         public bool IsActive { get; set; } = true;
         [Column("in_room")]
         public bool InRoom { get; set; } = false;
+        [Column("current_room_id")]
+        public int CurrentRoomId { get; set; }
 
         [ForeignKey("Key_Id")]
         public Keycard Keycard { get; set; }
