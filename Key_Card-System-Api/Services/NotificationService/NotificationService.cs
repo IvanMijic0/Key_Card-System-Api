@@ -3,6 +3,7 @@ using Key_Card_System_Api.Models.DTO;
 using Key_Card_System_Api.Repositories.NotificationRepository;
 using Key_Card_System_Api.Repositories.RoomRepository;
 using Keycard_System_API.Models;
+using Microsoft.AspNetCore.Identity.Data;
 
 namespace Key_Card_System_Api.Services.NotificationService
 {
@@ -36,6 +37,27 @@ namespace Key_Card_System_Api.Services.NotificationService
             }
 
             return notificationRequests;
+        }
+
+        public async Task<Notification> AddRequestAsync(NotificationAdd notificationAdd)
+        {
+            ArgumentNullException.ThrowIfNull(notificationAdd);
+            var notification = new Notification();
+
+            if (notificationAdd.Type_of_request == "access_level")
+            {
+                notification = new Notification(0, notificationAdd.User_Id, "Request for higher access level",
+                    notificationAdd.Type_of_request, notificationAdd.Access_level, 1);
+            }
+            else
+            {
+                notification = new Notification(0, notificationAdd.User_Id, "Request for new keycard",
+                     notificationAdd.Type_of_request, "", 1);
+            }
+
+            await _notificationRepository.AddRequestAsync(notification);
+
+            return notification;
         }
     }
 }

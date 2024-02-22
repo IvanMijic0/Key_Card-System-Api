@@ -222,15 +222,6 @@ namespace Key_Card_System_Api.Services.LogService
                 user.CurrentRoomId = logRequest.Room_Id;
 
                 description = $"Access granted to enter room {room.Name} for user {user.FirstName} {user.LastName} with key card ID {keycard.Id}";
-
-                bool previousaccessGranted = await ValidateAccess(keycard.PreviousAccessLevel, room.Access_level);
-                string previousaccessStatus = previousaccessGranted ? "granted" : "denied";
-
-                if (previousaccessStatus == "denied")
-                {
-                    keycard.AccessLevel = keycard.PreviousAccessLevel;
-                    _keycardRepository.UpdateKeycardAsync(keycard);
-                }
             }
             else if (logRequest.Entry_Type == "Out")
             {
@@ -245,6 +236,15 @@ namespace Key_Card_System_Api.Services.LogService
                 user.InRoom = false;
                 user.CurrentRoomId = 0;
                 description = $"Access granted to leave room {room.Name} for user {user.FirstName} {user.LastName} with key card ID {keycard.Id}";
+
+                bool previousaccessGranted = await ValidateAccess(keycard.PreviousAccessLevel, room.Access_level);
+                string previousaccessStatus = previousaccessGranted ? "granted" : "denied";
+
+                if (previousaccessStatus == "denied")
+                {
+                    keycard.AccessLevel = keycard.PreviousAccessLevel;
+                    await _keycardRepository.UpdateKeycardAsync(keycard);
+                }
             }
 
             var log = new Log(0, logRequest.Entry_Type, logRequest.User_Id, logRequest.Room_Id, description)

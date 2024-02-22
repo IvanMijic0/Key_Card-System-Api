@@ -5,5 +5,6 @@ namespace Key_Card_System_Api.Repositories.NotificationRepository
     public interface INotificationRepository
     {
         Task<List<Notification>> GetAllNotificationsWithRequestAsync();
+        Task<Notification> AddRequestAsync(Notification notification);
     }
 }
