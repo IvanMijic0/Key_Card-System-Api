@@ -5,6 +5,9 @@ namespace Key_Card_System_Api.configuration
 {
     public class MyHub : Hub
     {
+        // This is a simple in-memory storage for user subscriptions
+        // We should think of storing this in Redis or some other persistent storage
+        // This is easier for testing and getting started
         private static readonly Dictionary<string, HashSet<string>> _userSubscriptions = [];
 
         public void SubscribeToEndpoint(string userId, string endpoint)
