@@ -24,7 +24,7 @@ namespace Key_Card_System_Api.Controllers
             var cachedValue = await db.StringGetAsync(key);
             if (!cachedValue.IsNull)
             {
-                return Ok($"Cached value for key '{key}': {cachedValue}");
+                return Ok(cachedValue);
             }
             else
             {

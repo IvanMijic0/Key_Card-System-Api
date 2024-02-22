@@ -16,12 +16,12 @@ namespace Key_Card_System_Api.Repositories.UserRepository
 
         public async Task<List<User>> GetAllUsersAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.Include(u => u.Keycard).ToListAsync();
         }
 
         public async Task<User?> GetUserByIdAsync(int id)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            return await _context.Users.Include(u => u.Keycard).FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task CreateUserAsync(User user)
