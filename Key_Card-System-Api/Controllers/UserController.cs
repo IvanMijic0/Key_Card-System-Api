@@ -44,6 +44,20 @@ namespace Keycard_System_API.Controllers
             return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
         }
 
+        [HttpPut("Keycard/{user_id}/{response}/{access_level}")]
+        public async Task<IActionResult> UpdateUsersKeyCardAcessLevelAsync(int user_id, string response, string access_level)
+        {
+            try
+            {
+                await _userService.UpdateUsersKeyCardAcessLevelAsync(user_id, response, access_level);
+                return Ok(); 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message); 
+            }
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, User user)
         {

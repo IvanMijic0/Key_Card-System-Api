@@ -14,5 +14,7 @@ namespace Key_Card_System_Api.Services.UserService
         Task<User?> AuthenticateByEmailAsync(string email, string password);
         Task<User?> RegisterAsync(User user, string password);
         Task<List<User>> SearchUsersAsync(string keyId);
+
+        Task UpdateUsersKeyCardAcessLevelAsync(int user_id, string response, string access_level);
     }
 }
