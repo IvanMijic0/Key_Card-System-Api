@@ -1,3 +1,4 @@
+using Key_Card_System_Api.configuration;
 using Key_Card_System_Api.Repositories.KeycardRepository;
 using Key_Card_System_Api.Repositories.LogRepositroy;
 using Key_Card_System_Api.Repositories.NotificationRepository;
@@ -10,9 +11,11 @@ using Key_Card_System_Api.Services.RoomService;
 using Key_Card_System_Api.Services.UserService;
 using Keycard_System_API.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,18 +23,20 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var services = builder.Services;
 
-// Configure Redis
-// Adjust connection string as needed
-//services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
+// Add SignalR service
+services.AddSignalR();
 
-/*services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = "localhost"; // Adjust connection string as needed
-    options.InstanceName = "KeyCard-Redis-"; // Optional
-});*/
-
-// Configure DbContext
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+services.AddSingleton<IConnectionMultiplexer>(sp =>
+{
+    var redisUrl = "localhost";
+
+    var options = ConfigurationOptions.Parse(redisUrl);
+
+    return ConnectionMultiplexer.Connect(options);
+});
+
 
 if (connectionString != null)
 {
@@ -63,13 +68,13 @@ services.AddScoped<INotificationService, NotificationService>();
 
 services.AddCors(options =>
 {
-    options.AddDefaultPolicy(
-               builder =>
-               {
-                   builder.WithOrigins("http://localhost:3000")
-                       .AllowAnyHeader()
-                       .AllowAnyMethod();
-               });
+    options.AddPolicy("AllowSpecificOrigin",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
 });
 
 // Configure JWT Authentication
@@ -134,5 +139,8 @@ app.UseAuthorization(); // Authorization setup goes here
 app.UseCors("AllowSpecificOrigin"); // Cors setup
 
 app.MapControllers();
+
+// Map the SignalR endpoint
+app.MapHub<MyHub>("/myhub");
 
 app.Run($"http://0.0.0.0:{port}"); // Listen on all interfaces
