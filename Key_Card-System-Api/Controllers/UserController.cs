@@ -25,7 +25,6 @@ namespace Keycard_System_API.Controllers
             return Ok(users);
         }
 
-        [Authorize(Roles = UserRoles.Admin)]
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUserById(int id)
         {
