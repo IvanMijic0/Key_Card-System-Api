@@ -19,44 +19,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var services = builder.Services;
 
-services.AddStackExchangeRedisCache(options =>
-{
-    var redisUrl = "rediss://red-cnan6cn109ks739nnh20:vqgZKHdaJ1r6RVQLuZPcuuF8lFaFeqCO@frankfurt-redis.render.com:6379";
-    var uri = new Uri(redisUrl);
-
-    var configuration = new ConfigurationOptions
-    {
-        EndPoints = { $"{uri.Host}:{uri.Port}" },
-        Password = uri.UserInfo.Split(':')[1],
-        Ssl = uri.Scheme == "rediss"
-    };
-
-    try
-    {
-        var connection = ConnectionMultiplexer.Connect(configuration);
-        if (connection.IsConnected)
-        {
-            Console.WriteLine("Connection to Redis server is successful!");
-        }
-        else
-        {
-            Console.WriteLine("Failed to connect to Redis server.");
-        }
-
-        connection.Dispose();
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error connecting to Redis server: {ex.Message}");
-    }
-
-    options.Configuration = configuration.ToString();
-});
-
-
-
 
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+services.AddSingleton<IConnectionMultiplexer>(sp =>
+{
+    var redisUrl = "localhost";
+
+    var options = ConfigurationOptions.Parse(redisUrl);
+
+    return ConnectionMultiplexer.Connect(options);
+});
+
 
 if (connectionString != null)
 {
@@ -82,13 +56,13 @@ services.AddScoped<ILogService, LogService>();
 
 services.AddCors(options =>
 {
-    options.AddDefaultPolicy(
-               builder =>
-               {
-                   builder.WithOrigins("http://localhost:3000")
-                       .AllowAnyHeader()
-                       .AllowAnyMethod();
-               });
+    options.AddPolicy("AllowSpecificOrigin",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
 });
 
 // Configure JWT Authentication

@@ -47,7 +47,7 @@ namespace Key_Card_System_Api.Repositories.LogRepositroy
                 .Include(log => log.User)
                 .Include(log => log.Room)
                 .Where(log => log.User != null && log.User.InRoom)
-                .GroupBy(log => log.User.Id) 
+                .GroupBy(log => log.User.Id)
                 .Select(group => group.OrderByDescending(log => log.Timestamp).FirstOrDefault())
                 .ToListAsync();
 
