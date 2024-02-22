@@ -245,7 +245,6 @@ namespace Key_Card_System_Api.Services.LogService
             return await _logRepository.SearchLogsByKeycardIdAsync(searchTerm);
         }
 
-
         public async Task<int> CountLogsAsync()
         {
             return await _logRepository.CountLogsAsync();
