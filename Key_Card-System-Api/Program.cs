@@ -1,3 +1,4 @@
+using Key_Card_System_Api.configuration;
 using Key_Card_System_Api.Repositories.KeycardRepository;
 using Key_Card_System_Api.Repositories.LogRepositroy;
 using Key_Card_System_Api.Repositories.RoomRepository;
