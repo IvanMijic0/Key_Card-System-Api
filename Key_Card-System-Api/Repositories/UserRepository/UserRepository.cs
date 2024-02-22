@@ -49,6 +49,12 @@ namespace Key_Card_System_Api.Repositories.UserRepository
 
                 if (keyCard != null)
                 {
+                    var notification = await _context.notifications.FirstOrDefaultAsync(n => n.User_id == user_id && n.Is_active == 1);
+                    if (notification != null)
+                    { 
+                        notification.Is_active = 0;
+                        _context.notifications.Update(notification);
+                    }
                     if(response == "approve")
                     {
                         keyCard.AccessLevel = access_level;

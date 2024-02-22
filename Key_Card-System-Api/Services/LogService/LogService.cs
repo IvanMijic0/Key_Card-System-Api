@@ -1,4 +1,5 @@
-﻿using Key_Card_System_Api.Models.DTO;
+﻿using Key_Card_System_Api.Models;
+using Key_Card_System_Api.Models.DTO;
 using Key_Card_System_Api.Repositories.KeycardRepository;
 using Key_Card_System_Api.Repositories.LogRepositroy;
 using Key_Card_System_Api.Repositories.RoomRepository;
@@ -222,6 +223,14 @@ namespace Key_Card_System_Api.Services.LogService
 
                 description = $"Access granted to enter room {room.Name} for user {user.FirstName} {user.LastName} with key card ID {keycard.Id}";
 
+                bool previousaccessGranted = await ValidateAccess(keycard.PreviousAccessLevel, room.Access_level);
+                string previousaccessStatus = previousaccessGranted ? "granted" : "denied";
+
+                if (previousaccessStatus == "denied")
+                {
+                    keycard.AccessLevel = keycard.PreviousAccessLevel;
+                    _keycardRepository.UpdateKeycardAsync(keycard);
+                }
             }
             else if (logRequest.Entry_Type == "Out")
             {
