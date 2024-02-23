@@ -57,6 +57,8 @@ namespace Keycard_System_API.Controllers
             }
         }
 
+
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, User user)
         {
@@ -147,6 +149,20 @@ namespace Keycard_System_API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred while processing your request: {ex.Message}");
+            }
+        }
+
+        [HttpPut("UpdateKeyCardAccessLevel/{userId}/{accessLevel}")]
+        public async Task<IActionResult> UpdateUsersKeyCardAccessLevelAsync(int userId, string accessLevel)
+        {
+            try
+            {
+                await _userService. UpdateUsersKeyCardAsyncAccessLevel(userId, accessLevel);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }

@@ -1,12 +1,10 @@
-﻿using Key_Card_System_Api.Models;
-using Key_Card_System_Api.Models.DTO;
+﻿using Key_Card_System_Api.Models.DTO;
 using Key_Card_System_Api.Repositories.KeycardRepository;
 using Key_Card_System_Api.Repositories.LogRepositroy;
 using Key_Card_System_Api.Repositories.RoomRepository;
 using Key_Card_System_Api.Repositories.UserRepository;
 using Keycard_System_API.Models;
 using Keycard_System_API.Models.DTO;
-using Microsoft.EntityFrameworkCore;
 
 namespace Key_Card_System_Api.Services.LogService
 {

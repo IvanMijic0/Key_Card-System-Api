@@ -17,5 +17,6 @@ namespace Key_Card_System_Api.Services.UserService
         Task<List<User>> SearchUsersByUsernameAsync(string searchTerm);
         Task<List<User>> SearchUsersByKeyIdAsync(string searchTerm);
         Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword);
+        Task UpdateUsersKeyCardAsyncAccessLevel(int user_id, string access_level); 
     }
 }

@@ -66,7 +66,12 @@ namespace Key_Card_System_Api.Services.UserService
 
         public async Task UpdateUsersKeyCardAsync(int user_id, string response, string access_level)
         {
-            await _userRepository.UpdateUsersKeyCardAsync(user_id, response,access_level);
+            await _userRepository.UpdateUsersKeyCardAsync(user_id, response, access_level);
+        }
+
+        public async Task UpdateUsersKeyCardAsyncAccessLevel(int user_id, string access_level)
+        {
+            await _userRepository.UpdateUsersKeyCardAcessLevelAsync(user_id, access_level);
         }
 
         public async Task<User?> AuthenticateByEmailAsync(string email, string password)
@@ -94,6 +99,8 @@ namespace Key_Card_System_Api.Services.UserService
 
             return user;
         }
+
+
 
         public async Task<List<User>> SearchUsersByUsernameAsync(string searchTerm)
         {
