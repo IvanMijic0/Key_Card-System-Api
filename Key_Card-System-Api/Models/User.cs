@@ -22,6 +22,8 @@ namespace Keycard_System_API.Models
         public bool InRoom { get; set; } = false;
         [Column("current_room_id")]
         public int CurrentRoomId { get; set; }
+        [Column("first_login")]
+        public bool FirstLogin { get; set; } = false;
 
         [ForeignKey("Key_Id")]
         public Keycard Keycard { get; set; }

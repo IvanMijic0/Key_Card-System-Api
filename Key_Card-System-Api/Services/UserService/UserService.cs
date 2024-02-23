@@ -86,9 +86,9 @@ namespace Key_Card_System_Api.Services.UserService
             if (existingUser != null)
                 return null;
 
-            user.PasswordHash = PasswordHash.HashPassword(password);
+            user.FirstLogin = true;
 
-            user.Keycard.PreviousAccessLevel = user.Keycard.AccessLevel;
+            user.PasswordHash = PasswordHash.HashPassword(password);
 
             await _userRepository.CreateUserAsync(user);
 
@@ -108,6 +108,29 @@ namespace Key_Card_System_Api.Services.UserService
         public async Task UpdateUsersKeyCardAcessLevelAsync(int user_id, string access_level)
         {
             await _userRepository.UpdateUsersKeyCardAcessLevelAsync(user_id, access_level);
+        }
+
+        public async Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            if (!PasswordHash.VerifyPassword(currentPassword, user.PasswordHash))
+            {
+                return false;
+            }
+
+            user.PasswordHash = PasswordHash.HashPassword(newPassword);
+
+            user.FirstLogin = false;
+
+            await _userRepository.UpdateUserAsync(user);
+
+            return true;
         }
     }
 }

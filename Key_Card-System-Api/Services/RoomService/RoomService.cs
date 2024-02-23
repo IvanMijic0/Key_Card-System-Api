@@ -24,7 +24,7 @@ namespace Key_Card_System_Api.Services.RoomService
 
         public async Task UpdateRoomAccessLevelAsync(int roomId, string accessLevel)
         {
-           await _roomRepository.UpdateRoomAccessLevelAsync(roomId, accessLevel);   
+            await _roomRepository.UpdateRoomAccessLevelAsync(roomId, accessLevel);
         }
     }
 }

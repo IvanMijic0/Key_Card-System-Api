@@ -59,7 +59,10 @@ namespace Keycard_System_API.Controllers
         {
             string defaultRole = "Employee";
 
-            var newKeycard = new Keycard(model.Key_Id, model.Access_Level);
+            var newKeycard = new Keycard(model.Key_Id, model.Access_Level)
+            {
+                PreviousAccessLevel = model.Access_Level
+            };
 
             await _keycardService.CreateKeycardAsync(newKeycard);
 

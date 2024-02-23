@@ -1,4 +1,5 @@
-﻿using Key_Card_System_Api.Services.UserService;
+﻿using Key_Card_System_Api.Models.DTO;
+using Key_Card_System_Api.Services.UserService;
 using Keycard_System_API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -138,6 +139,28 @@ namespace Keycard_System_API.Controllers
             catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while processing your request: {ex.Message}");
+            }
+        }
+
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
+        {
+            try
+            {
+                bool passwordChanged = await _userService.ChangePasswordAsync(model.UserId, model.CurrentPassword, model.NewPassword);
+
+                if (passwordChanged)
+                {
+                    return Ok("Password changed successfully.");
+                }
+                else
+                {
+                    return BadRequest("Failed to change password. Please make sure your current password is correct.");
+                }
             }
             catch (Exception ex)
             {
