@@ -54,7 +54,7 @@ namespace Key_Card_System_Api.configuration
         {
             try
             {
-                await Clients.All.SendAsync($"ReceiveNotification:Manager", message); // Not the best implementation, but works for now
+                await Clients.All.SendAsync($"ReceiveNotification:Admin", message); // Not the best implementation, but works for now
             }
             catch (Exception)
             {
