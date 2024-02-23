@@ -48,7 +48,7 @@ namespace Keycard_System_API.Controllers
         {
             try
             {
-                await _userService.UpdateUsersKeyCardAcessLevelAsync(user_id, response, access_level);
+                await _userService.UpdateUsersKeyCardAsync(user_id, response, access_level);
                 return Ok(); 
             }
             catch (Exception ex)

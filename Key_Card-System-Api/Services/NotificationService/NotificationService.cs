@@ -23,7 +23,7 @@ namespace Key_Card_System_Api.Services.NotificationService
 
             foreach (var notification in notifications)
             {
-                if (notification.Type == "request" && notification.Is_active == 1)
+                if (notification.Is_active == 1)
                 {
                     var notificationRequest = new NotificationRequest
                     {

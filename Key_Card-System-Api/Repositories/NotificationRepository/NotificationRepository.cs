@@ -16,8 +16,8 @@ namespace Key_Card_System_Api.Repositories.NotificationRepository
 
         public async Task<List<Notification>> GetAllNotificationsWithRequestAsync()
         {
-            return await _context.notifications.Where(n => n.Type == "request")
-               .Include(log => log.User)
+            return await _context.notifications
+               .Include(notification => notification.User)
                .ToListAsync();
         }
 
