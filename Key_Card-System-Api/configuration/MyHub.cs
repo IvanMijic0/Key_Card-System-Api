@@ -30,7 +30,7 @@ namespace Key_Card_System_Api.configuration
             }
         }
 
-        public async Task SendNotificationToUser(string userId, string message)
+        public async Task SendNotificationToEmployee(string userId, string message)
         {
             Debug.WriteLine("Sending notification to user: " + userId);
             if (_userSubscriptions.TryGetValue(userId, out HashSet<string>? endpoints))
@@ -50,23 +50,15 @@ namespace Key_Card_System_Api.configuration
             }
         }
 
-        public async Task SendNotificationToUser2(string userId, string message)
+        public async Task SendNotificationToManagers(string message)
         {
-            Debug.WriteLine("Sending notification to user: " + userId);
-            if (_userSubscriptions.TryGetValue(userId, out HashSet<string>? endpoints))
+            try
             {
-                foreach (var endpoint in endpoints)
-                {
-                    try
-                    {
-                        await Clients.All.SendAsync($"ReceiveNotification:{userId}", message); // Not the best implementation, but works for now
-                        Debug.WriteLine("Notification sent to endpoint: " + endpoint);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Error sending notification to endpoint {endpoint}: {ex.Message}");
-                    }
-                }
+                await Clients.All.SendAsync($"ReceiveNotification:Admin", message); // Not the best implementation, but works for now
+            }
+            catch (Exception)
+            {
+                Debug.WriteLine($"Error sending notification to manager endpoint");
             }
         }
     }

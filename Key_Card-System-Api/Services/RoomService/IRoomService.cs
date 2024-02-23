@@ -6,5 +6,6 @@ namespace Key_Card_System_Api.Services.RoomService
     {
         Task<List<Room>> GetAllRoomsAsync();
         Task<Room?> GetRoomByIdAsync(int id);
+        Task UpdateRoomAccessLevelAsync(int roomId, string accessLevel);
     }
 }

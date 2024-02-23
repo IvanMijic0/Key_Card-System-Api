@@ -28,6 +28,8 @@ namespace Key_Card_System_Api.Repositories.UserRepository
             return await _context.Users.Include(u => u.Keycard).FirstOrDefaultAsync(u => u.Id == id);
         }
 
+
+
         public async Task CreateUserAsync(User user)
         {
             _context.Users.Add(user);
@@ -58,6 +60,7 @@ namespace Key_Card_System_Api.Repositories.UserRepository
                         _context.notifications.Update(notification);
                     }
                     if(response == "approve")
+                    if (response == "approve")
                     {
                         if(access_level == "Admin" || access_level == "Manager" || access_level == "Low" || access_level == "Medium" || access_level == "High")
                         {
@@ -107,7 +110,9 @@ namespace Key_Card_System_Api.Repositories.UserRepository
 
         public async Task<User?> GetUserByUsernameAsync(string username)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            return await _context.Users
+                .Include(u => u.Keycard)
+                .FirstOrDefaultAsync(u => u.Username == username);
         }
 
         public async Task<List<User>> SearchUsersByUsernameAsync(string searchTerm)
@@ -131,5 +136,18 @@ namespace Key_Card_System_Api.Repositories.UserRepository
                 .Where(u => u.Key_Id == keyId)
                 .ToListAsync();
         }
+
+        public async Task UpdateUsersKeyCardAcessLevelAsync(int userId, string accessLevel)
+        {
+            var user = await _context.Users
+                .Include(u => u.Keycard)
+                .FirstOrDefaultAsync(u => u.Id == userId) ?? throw new Exception("User not found.");
+            var keycard = user.Keycard ?? throw new Exception("Keycard not found for this user.");
+            keycard.AccessLevel = accessLevel;
+            keycard.PreviousAccessLevel = accessLevel;
+
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

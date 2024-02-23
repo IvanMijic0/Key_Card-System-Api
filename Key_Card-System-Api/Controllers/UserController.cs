@@ -50,10 +50,12 @@ namespace Keycard_System_API.Controllers
             {
                 await _userService.UpdateUsersKeyCardAsync(user_id, response, access_level);
                 return Ok(); 
+                await _userService.UpdateUsersKeyCardAcessLevelAsync(user_id, response, access_level);
+                return Ok();
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message); 
+                return BadRequest(ex.Message);
             }
         }
 
@@ -125,6 +127,46 @@ namespace Keycard_System_API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "Internal Server Error", error = ex.Message });
+            }
+        }
+
+        [HttpPost("{userId}/keycard/accesslevel")]
+        public async Task<IActionResult> UpdateUserKeycardAccessLevel(int userId, string accessLevel)
+        {
+            try
+            {
+                await _userService.UpdateUsersKeyCardAcessLevelAsync(userId, accessLevel);
+                return Ok("Keycard access level updated successfully.");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while processing your request: {ex.Message}");
+            }
+        }
+
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
+        {
+            try
+            {
+                bool passwordChanged = await _userService.ChangePasswordAsync(model.UserId, model.CurrentPassword, model.NewPassword);
+
+                if (passwordChanged)
+                {
+                    return Ok("Password changed successfully.");
+                }
+                else
+                {
+                    return BadRequest("Failed to change password. Please make sure your current password is correct.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while processing your request: {ex.Message}");
             }
         }
     }
