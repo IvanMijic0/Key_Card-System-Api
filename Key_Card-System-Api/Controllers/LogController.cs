@@ -1,11 +1,12 @@
 ﻿using Key_Card_System_Api.Models.DTO;
 using Key_Card_System_Api.Services.LogService;
 using Keycard_System_API.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Keycard_System_API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class LogController : ControllerBase

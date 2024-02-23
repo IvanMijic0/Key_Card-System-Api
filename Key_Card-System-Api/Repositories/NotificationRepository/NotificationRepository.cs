@@ -1,5 +1,6 @@
 ﻿using Key_Card_System_Api.Models;
 using Keycard_System_API.Data;
+using Keycard_System_API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Key_Card_System_Api.Repositories.NotificationRepository
@@ -15,9 +16,18 @@ namespace Key_Card_System_Api.Repositories.NotificationRepository
 
         public async Task<List<Notification>> GetAllNotificationsWithRequestAsync()
         {
-            return await _context.notifications.Where(n => n.Type == "request")
-               .Include(log => log.User)
+            return await _context.notifications
+               .Include(notification => notification.User)
                .ToListAsync();
+        }
+
+        public async Task<Notification> AddRequestAsync(Notification notification)
+        {
+            ArgumentNullException.ThrowIfNull(notification);
+
+            _context.notifications.Add(notification);
+            await _context.SaveChangesAsync();
+            return notification;
         }
     }
 }

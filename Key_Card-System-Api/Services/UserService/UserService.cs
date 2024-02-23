@@ -64,8 +64,9 @@ namespace Key_Card_System_Api.Services.UserService
             return null;
         }
 
-        public async Task UpdateUsersKeyCardAcessLevelAsync(int user_id, string response, string access_level)
+        public async Task UpdateUsersKeyCardAsync(int user_id, string response, string access_level)
         {
+            await _userRepository.UpdateUsersKeyCardAsync(user_id, response,access_level);
             await _userRepository.UpdateUsersKeyCardAcessLevelAsync(user_id, response, access_level);
         }
 

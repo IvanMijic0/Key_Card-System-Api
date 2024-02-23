@@ -21,5 +21,11 @@ namespace Key_Card_System_Api.Controllers
         {
             return await _notificationService.GetAllNotificationsWithRequestAsync();
         }
+
+        [HttpPost]
+        public async Task<Notification> AddRequestAsync(NotificationAdd notificationAdd)
+        {
+            return await _notificationService.AddRequestAsync(notificationAdd);
+        }
     }
 }

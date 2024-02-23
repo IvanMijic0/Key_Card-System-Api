@@ -19,6 +19,8 @@ namespace Key_Card_System_Api.Models
 
         public int Is_active { get; set; }
 
+        public Notification() { }
+
         public Notification(int id, int user_id, string message, string type, string access_level, int is_active)
         {
             Id = id;

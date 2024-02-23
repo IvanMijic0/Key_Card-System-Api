@@ -16,6 +16,9 @@ namespace Key_Card_System_Api.Models
         [Column("previous_access_level")]
         public string PreviousAccessLevel { get; set; }
 
+        [Column("previous_access_level")]
+        public string PreviousAccessLevel { get; set; }
+
         [Column("is_active")]
         public bool IsActive { get; set; } = true;
 

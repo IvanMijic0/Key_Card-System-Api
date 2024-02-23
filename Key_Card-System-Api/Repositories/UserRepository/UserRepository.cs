@@ -1,6 +1,8 @@
-﻿using Keycard_System_API.Data;
+﻿using Key_Card_System_Api.Models;
+using Keycard_System_API.Data;
 using Keycard_System_API.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 
 namespace Key_Card_System_Api.Repositories.UserRepository
@@ -41,7 +43,7 @@ namespace Key_Card_System_Api.Repositories.UserRepository
             return user;
         }
 
-        public async Task UpdateUsersKeyCardAcessLevelAsync(int user_id, string response, string access_level)
+        public async Task UpdateUsersKeyCardAsync(int user_id, string response, string access_level)
         {
             var user = await _context.Users.FindAsync(user_id);
 
@@ -51,9 +53,28 @@ namespace Key_Card_System_Api.Repositories.UserRepository
 
                 if (keyCard != null)
                 {
+                    var notification = await _context.notifications.FirstOrDefaultAsync(n => n.User_id == user_id && n.Is_active == 1);
+                    if (notification != null)
+                    { 
+                        notification.Is_active = 0;
+                        _context.notifications.Update(notification);
+                    }
+                    if(response == "approve")
                     if (response == "approve")
                     {
-                        keyCard.AccessLevel = access_level;
+                        if(access_level == "Admin" || access_level == "Manager" || access_level == "Low" || access_level == "Medium" || access_level == "High")
+                        {
+                            keyCard.AccessLevel = access_level;
+                        }
+                        else
+                        {
+                            Random random = new Random();
+
+                            int dodatniBrojevi = random.Next(0, 999999);
+                            string osmobitniBroj = keyCard.Id.ToString() + "000" + dodatniBrojevi.ToString("D6");
+                            keyCard.Key_Id = osmobitniBroj;
+                        }
+
                         _context.Keycards.Update(keyCard);
                     }
 
