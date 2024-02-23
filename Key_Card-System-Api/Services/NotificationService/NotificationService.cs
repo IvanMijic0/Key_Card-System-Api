@@ -1,4 +1,5 @@
-﻿using Key_Card_System_Api.Models.DTO;
+﻿using Key_Card_System_Api.Models;
+using Key_Card_System_Api.Models.DTO;
 using Key_Card_System_Api.Repositories.NotificationRepository;
 using Key_Card_System_Api.Repositories.RoomRepository;
 using Keycard_System_API.Models;
